@@ -1,0 +1,13 @@
+layout,algo,n,BFS,random_rolls,conv_episodes median[min-max],not_converged,final_rolls_mean
+"base (5L,5S)",Q-Learning,5,5,22.4,14 [9-21],1,5.2
+"base (5L,5S)",SARSA,5,5,22.4,17 [13-40],0,5.0
+"no_snakes (5L,0S)",Q-Learning,5,5,15.9,32 [18-450],0,5.0
+"no_snakes (5L,0S)",SARSA,5,5,15.9,29 [22-42],0,5.0
+"no_ladders (0L,5S)",Q-Learning,5,9,33.6,140 [120-180],1,9.2
+"no_ladders (0L,5S)",SARSA,5,9,33.6,300 [300-310],2,9.6
+"many_snakes (5L,10S)",Q-Learning,5,5,32.4,5 [4-320],0,5.0
+"many_snakes (5L,10S)",SARSA,5,5,32.4,10 [4-39],0,5.0
+"snakes_early (5L,5S)",Q-Learning,5,5,21.0,26 [10-70],1,5.2
+"snakes_early (5L,5S)",SARSA,5,5,21.0,27 [16-33],0,5.0
+"snakes_late (5L,5S)",Q-Learning,5,5,27.6,26 [19-37],1,5.2
+"snakes_late (5L,5S)",SARSA,5,5,27.6,25 [12-60],0,5.0

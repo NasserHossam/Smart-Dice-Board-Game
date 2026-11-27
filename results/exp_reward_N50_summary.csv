@@ -1,0 +1,11 @@
+config,algo,n,success_share,rolls_median,reached_bfs_rolls,orig_return,snakes_hit,ladders_used,own_optimum_value,reached_own_optimum
+default,qlearning,10,1.0,5.0,1.0,159.0,0.0,3.0,159.0,1.0
+default,sarsa,10,1.0,5.0,1.0,159.0,0.0,3.0,159.0,1.0
+step_cost_only,qlearning,10,1.0,5.0,1.0,148.5,0.0,2.5,96.0,1.0
+step_cost_only,sarsa,10,1.0,5.0,1.0,146.4,0.0,2.4,96.0,1.0
+harsh_snake,qlearning,10,1.0,5.0,1.0,159.0,0.0,3.0,159.0,1.0
+harsh_snake,sarsa,10,1.0,5.0,1.0,148.5,0.0,2.5,159.0,0.5
+no_step_cost,qlearning,10,1.0,5.0,1.0,159.0,0.0,3.0,160.0,1.0
+no_step_cost,sarsa,10,1.0,5.0,1.0,159.0,0.0,3.0,160.0,1.0
+big_ladder,qlearning,10,0.0,250.0,0.0,55.0,123.1,125.9,,
+big_ladder,sarsa,10,0.0,250.0,0.0,12.7,119.8,120.9,,
