@@ -1,0 +1,23 @@
+{
+  "algo": "sarsa",
+  "board": "N100",
+  "seed": 0,
+  "bfs_optimum": 10,
+  "episodes_planned": 300,
+  "episodes_run": 300,
+  "stopped_by_time_limit": false,
+  "elapsed_s": 0.64,
+  "converged": true,
+  "convergence_episode": 30,
+  "final_eval_success": 1.0,
+  "final_eval_moves": 10.0,
+  "final_eval_return": 196.0,
+  "alpha": 0.1,
+  "gamma": 0.99,
+  "eps_start": 1.0,
+  "eps_end": 0.05,
+  "eps_decay_frac": 0.7,
+  "eval_every": 10,
+  "eval_games": 100,
+  "rewards": "default"
+}

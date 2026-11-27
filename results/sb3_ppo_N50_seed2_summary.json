@@ -1,0 +1,37 @@
+{
+  "algo": "ppo",
+  "board": "N50",
+  "seed": 2,
+  "bfs_optimum": 5,
+  "timesteps_planned": 50000,
+  "timesteps_run": 50176,
+  "episodes_run": 9426,
+  "stopped_by_time_limit": false,
+  "elapsed_s": 91.21,
+  "steps_per_sec": 550.1,
+  "converged": true,
+  "convergence_timesteps": 4500,
+  "convergence_episode": 365,
+  "optimal_timesteps": 4500,
+  "optimal_episode": 365,
+  "final_eval_success": 1.0,
+  "final_eval_moves": 5.0,
+  "final_eval_return": 159.0,
+  "reward_scale": 0.1,
+  "eval_every": 500,
+  "hyperparameters": {
+    "learning_rate": 0.0003,
+    "n_steps": 256,
+    "batch_size": 64,
+    "n_epochs": 10,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_range": 0.2,
+    "ent_coef": 0.01,
+    "net_arch": [
+      64,
+      64
+    ]
+  },
+  "rewards": "default"
+}
