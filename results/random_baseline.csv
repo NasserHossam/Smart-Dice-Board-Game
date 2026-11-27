@@ -1,0 +1,4 @@
+board,BFS,random_success_%,random_mean_rolls,random_mean_return,optimal_return
+N30,4,100.0,15.54,48.6,139.0
+N50,5,100.0,21.69,48.3,159.0
+N100,10,100.0,36.93,40.4,196.0
