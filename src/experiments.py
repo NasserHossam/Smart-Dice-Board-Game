@@ -9,6 +9,10 @@ experiments.py - two small TABULAR experiments that answer report questions:
             an endless positive loop, so no finite optimum exists.
   layout  : How do the NUMBER and LOCATION of snakes and ladders affect learning?
             Six N=50 variants of the default layout (fixed and documented below).
+  epsilon : What does epsilon-greedy exploration do? Six exploration schedules (EPS_CONFIGS below, including
+            no exploration at all and the main 1.0 -> 0.05 schedule), Q-Learning and SARSA, on N50, N100 and
+            the larger N200 board of Challenge 5. Records the final greedy policy, convergence, and the average
+            reward per TRAINING episode (what exploring costs while learning).
 
 Both use the same tabular.train() as the main runs, so epsilon-greedy, alpha, gamma are identical.
 Convergence for the layout experiment uses the same rule as the main results: from episode E until
@@ -17,8 +21,10 @@ the end of training every checkpoint has success >= 95% and rolls <= 1.10 * BFS 
 Usage:
   python src/experiments.py --which both --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 2000
   python src/experiments.py --which reward --board N100 --seeds 0 1 2 3 4
+  python src/experiments.py --which epsilon --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 2000 --workers 6
 Outputs: results/experiments/exp_reward_<board>_runs.csv + _summary.csv, exp_layout_runs.csv + _summary.csv,
-         results/figures/plot_exp_reward.png, plot_exp_layout.png
+         exp_epsilon_runs.csv + _summary.csv, results/figures/plot_exp_reward.png, plot_exp_layout.png,
+         plot_exp_epsilon.png
 """
 from __future__ import annotations
 
@@ -218,9 +224,106 @@ def run_layout(seeds, episodes: int, time_limit):
     return summ
 
 
+# --------------------------------------------------------------------------- epsilon experiment
+# name -> (eps_start, eps_end, fraction of training over which epsilon decays). 1e-12 stands for 0
+# (tabular.train computes the decay as a ratio, so an exact 0 is not allowed).
+EPS_CONFIGS = {
+    "greedy only (eps 0)": (1e-12, 1e-12, 0.7),
+    "constant 0.1": (0.1, 0.1, 0.7),
+    "1.0 to 0.01 over 70%": (1.0, 0.01, 0.7),
+    "1.0 to 0.05 over 70% (main)": (1.0, 0.05, 0.7),
+    "1.0 to 0.2 over 70%": (1.0, 0.2, 0.7),
+    "1.0 to 0.05 over 30%": (1.0, 0.05, 0.3),
+}
+
+
+def _register_large_boards():
+    """N200 (Challenge 5) is defined in challenges/challenge5_dqn_vs_tabular.py; importing it registers it."""
+    import sys
+    from paths import ROOT
+    if "N200" not in BOARDS:
+        sys.path.insert(0, str(ROOT / "challenges"))
+        import challenge5_dqn_vs_tabular  # noqa: F401
+
+
+def _epsilon_run(board_name: str, cfg: str, algo: str, seed: int, episodes: int, time_limit):
+    _register_large_boards()
+    e0, e1, frac = EPS_CONFIGS[cfg]
+    bfs = bfs_min_rolls(BOARDS[board_name])
+    _, log, summ = train(board_name, algo, episodes, seed, eps_start=e0, eps_end=e1, eps_decay_frac=frac,
+                         eval_games=20, time_limit=time_limit, verbose=False)
+    ev = log.dropna(subset=["eval_success"])
+    ok = ((ev.eval_success >= 0.95) & (ev.eval_moves <= 1.10 * bfs)).to_numpy()
+    conv = stable_to_end(ev.episode.to_numpy(), ok)
+    early = ev[ev.episode <= 200]
+    return {"board": board_name, "config": cfg, "algo": algo, "seed": seed, "bfs": bfs,
+            "final_success": float(ev.eval_success.iloc[-1]), "final_rolls": float(ev.eval_moves.iloc[-1]),
+            "final_return": float(ev.eval_return.iloc[-1]),
+            "conv_episode": conv, "conv_steps": None if conv is None else int(log.train_moves.iloc[:conv].sum()),
+            "train_return_mean": float(log.train_return.mean()),       # average reward per TRAINING episode
+            "train_moves_mean": float(log.train_moves.mean()),
+            "early_rolls_ratio": float((early.eval_moves / bfs).mean()),
+            "stopped_by_time_limit": bool(summ["stopped_by_time_limit"])}
+
+
+def run_epsilon(boards, seeds, episodes: int, time_limit, workers: int):
+    from concurrent.futures import ProcessPoolExecutor
+    _register_large_boards()
+    jobs = [(b, c, a, s) for b in boards for c in EPS_CONFIGS for a in ALGOS for s in seeds]
+    with ProcessPoolExecutor(max_workers=workers) as ex:
+        futs = [ex.submit(_epsilon_run, b, c, a, s, episodes, time_limit) for b, c, a, s in jobs]
+        rows = []
+        for k, f in enumerate(futs, 1):
+            rows.append(f.result())
+            if k % 30 == 0 or k == len(futs):
+                print(f"  epsilon experiment: {k}/{len(futs)} runs done", flush=True)
+    df = pd.DataFrame(rows)
+    df.to_csv(EXPERIMENTS / "exp_epsilon_runs.csv", index=False)
+    summ = (df.groupby(["board", "config", "algo"], sort=False)
+            .agg(n=("seed", "count"), success_share=("final_success", lambda x: float((x >= 0.95).mean())),
+                 final_rolls_mean=("final_rolls", "mean"), final_return_mean=("final_return", "mean"),
+                 conv_episode_median=("conv_episode", "median"), conv_steps_median=("conv_steps", "median"),
+                 not_converged=("conv_episode", lambda x: int(x.isna().sum())),
+                 train_return_mean=("train_return_mean", "mean"), early_rolls_ratio_median=("early_rolls_ratio", "median"))
+            .round(2).reset_index())
+    summ.to_csv(EXPERIMENTS / "exp_epsilon_summary.csv", index=False)
+    pd.set_option("display.width", 250)
+    pd.set_option("display.max_columns", 30)
+    print("\nEPSILON EXPERIMENT (final = greedy policy after training; train_return_mean = average reward per "
+          "training episode, i.e. the cost of exploring)")
+    print(summ.to_string(index=False))
+
+    cfgs = list(EPS_CONFIGS)
+    fig, axes = plt.subplots(2, len(boards), figsize=(5.2 * len(boards), 8), squeeze=False)
+    x = np.arange(len(cfgs))
+    for j, b in enumerate(boards):
+        for k, algo in enumerate(ALGOS):
+            s = summ[(summ.board == b) & (summ.algo == algo)].set_index("config").loc[cfgs]
+            axes[0, j].bar(x + (k - 0.5) * 0.38, s["final_rolls_mean"], 0.38, label=NAMES[algo])
+            axes[1, j].bar(x + (k - 0.5) * 0.38, s["train_return_mean"], 0.38, label=NAMES[algo])
+        bfs = bfs_min_rolls(BOARDS[b])
+        axes[0, j].axhline(bfs, color="k", ls="--", lw=1)
+        axes[0, j].set_ylim(bfs * 0.9, None)
+        axes[0, j].set_title(f"{b}: final greedy rolls (mean of {len(seeds)} seeds; BFS = {bfs})")
+        axes[1, j].set_title(f"{b}: average reward per training episode")
+        for i in (0, 1):
+            axes[i, j].set_xticks(x)
+            axes[i, j].set_xticklabels(cfgs, rotation=30, ha="right", fontsize=8)
+            axes[i, j].grid(alpha=0.3, axis="y")
+    axes[0, 0].legend()
+    fig.suptitle("Effect of the epsilon-greedy schedule (2,000 training episodes)")
+    fig.tight_layout()
+    fig.savefig(FIGURES / "plot_exp_epsilon.png", dpi=130)
+    plt.close(fig)
+    return summ
+
+
 def main():
-    p = argparse.ArgumentParser(description="Reward-design and layout experiments (tabular)")
-    p.add_argument("--which", default="both", choices=["reward", "layout", "both"])
+    p = argparse.ArgumentParser(description="Reward-design, layout and epsilon experiments (tabular)")
+    p.add_argument("--which", default="both", choices=["reward", "layout", "both", "epsilon"],
+                   help="'both' = reward + layout; 'epsilon' = the exploration-schedule experiment")
+    p.add_argument("--eps-boards", nargs="+", default=["N50", "N100", "N200"], help="boards for --which epsilon")
+    p.add_argument("--workers", type=int, default=4, help="parallel processes for --which epsilon")
     p.add_argument("--board", default="N50", help="board for the reward experiment")
     p.add_argument("--seeds", type=int, nargs="+", default=list(range(10)))
     p.add_argument("--episodes", type=int, default=2000)
@@ -232,6 +335,8 @@ def main():
         run_reward(a.board, a.seeds, a.episodes, a.time_limit)
     if a.which in ("layout", "both"):
         run_layout(a.seeds, a.episodes, a.time_limit)
+    if a.which == "epsilon":
+        run_epsilon(a.eps_boards, a.seeds, a.episodes, a.time_limit, a.workers)
 
 
 if __name__ == "__main__":
