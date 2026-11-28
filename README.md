@@ -45,7 +45,7 @@ Smart Dice Board Game/
 │   ├── analyze_tabular.py convergence metrics for all saved tabular runs
 │   ├── evaluate.py        final tables and random baseline
 │   ├── unified_convergence.py  one convergence rule for all five algorithms
-│   ├── experiments.py     reward-function and snake/ladder-layout experiments (tabular)
+│   ├── experiments.py     reward-function, snake/ladder-layout and epsilon experiments (tabular)
 │   └── plots.py           all required figures
 ├── challenges/            challenge1_random_dice.py ... challenge6_reward_shaping.py
 ├── demos/                 demo.py (play one game), demo_learning.py (watch Q-Learning and SARSA learn)
@@ -54,7 +54,7 @@ Smart Dice Board Game/
 │   ├── tabular/           Q-Learning and SARSA runs: *_log.csv, *_Q.npy, *_summary.json
 │   ├── deep_rl/           DQN, PPO, A2C runs: *_episodes.csv, *_evals.csv, *_policy.npy, *_summary.json
 │   ├── tables/            final tables, convergence tables, random baseline, pilot timing
-│   ├── experiments/       reward-function and layout experiment tables
+│   ├── experiments/       reward-function, layout and epsilon (exploration schedule) experiment tables
 │   └── figures/           all main-project figures (PNG)
 ├── results_challenges/
 │   └── ch1/ ... ch6/      outputs of each challenge
@@ -95,6 +95,7 @@ python src/plots.py
 # experiments
 python src/experiments.py --which reward --board N50 --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 2000
 python src/experiments.py --which layout --seeds 0 1 2 3 4 --episodes 1000 --time-limit 120
+python src/experiments.py --which epsilon --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 2000 --workers 6
 ```
 
 Both training scripts accept `--time-limit SECONDS` per run; a run that hits it stops and saves what it has. No run in the reported results hit the limit.
