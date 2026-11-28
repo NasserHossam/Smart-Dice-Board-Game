@@ -1,0 +1,7 @@
+board,algo,n,final_regret_median,final_regret_max,agreement_median,agreement_reach_median,not_converged,conv_episode_median,exp_return_median
+N30,qlearning,5,0.0,0.0,0.833,1.0,0,194000.0,65.571
+N30,sarsa,5,0.0,0.0,0.833,1.0,0,195000.0,65.571
+N50,qlearning,5,0.0,0.127,0.833,1.0,1,196000.0,62.923
+N50,sarsa,5,0.049,0.208,0.8,0.96,2,198000.0,62.9
+N100,qlearning,5,0.253,0.324,0.75,0.878,4,199500.0,57.539
+N100,sarsa,5,0.391,0.496,0.729,0.854,4,200000.0,57.737
