@@ -2,3 +2,4 @@
 __pycache__/
 *.pyc
 results/*_model.zip
+results_challenges/*_model.zip
