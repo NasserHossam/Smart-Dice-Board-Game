@@ -2,11 +2,11 @@
 demo.py - play ONE game of the Smart Dice Board Game with a saved policy and print it step by step.
 
 Examples (PowerShell, from the project folder):
-  python demo.py --board N30 --source bfs                       # no files needed: BFS-optimal player
-  python demo.py --board N30 --source random --seed 3           # random baseline
-  python demo.py --board N100 --source tabular --algo sarsa --seed 0
-  python demo.py --board N50 --source file --file results\\SOME_FILE.npy
-  python demo.py --list                                         # show candidate policy files in results\\
+  python demos/demo.py --board N30 --source bfs                       # no files needed: BFS-optimal player
+  python demos/demo.py --board N30 --source random --seed 3           # random baseline
+  python demos/demo.py --board N100 --source tabular --algo sarsa --seed 0
+  python demos/demo.py --board N50 --source file --file results\\deep_rl\\SOME_FILE.npy
+  python demos/demo.py --list                                         # show candidate policy files in results\\tabular and results\\deep_rl
 
 Policy files accepted (checked by shape, nothing is guessed silently):
   * 2-D array of shape (N, 6)       -> treated as Q-values, greedy action = argmax
@@ -21,6 +21,12 @@ import time
 
 import numpy as np
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
+
+from paths import DEEP, TABULAR
 from env import BOARDS, SmartDiceEnv, bfs_min_rolls, board_to_text, optimal_roll_sets
 
 
@@ -52,15 +58,15 @@ def bfs_policy(board):
 
 
 def find_tabular_file(board, algo, seed):
-    pattern = f"results/tabular_{algo or '*'}_{board}_seed{seed if seed is not None else '*'}_Q.npy"
+    pattern = str(TABULAR / f"tabular_{algo or '*'}_{board}_seed{seed if seed is not None else '*'}_Q.npy")
     hits = sorted(glob.glob(pattern))
     return hits[0] if hits else None
 
 
 def list_candidates():
-    files = sorted(glob.glob("results/*.npy") + glob.glob("results/*policy*"))
+    files = sorted(glob.glob(str(TABULAR / "*.npy")) + glob.glob(str(DEEP / "*policy*")))
     if not files:
-        print("No .npy or *policy* files found in results\\.")
+        print("No .npy or *policy* files found in results\\tabular or results\\deep_rl.")
     for f in files:
         print(f)
 
@@ -125,7 +131,7 @@ def main():
     else:
         path = a.file if a.source == "file" else find_tabular_file(a.board, a.algo, a.seed)
         if not path or not os.path.exists(path):
-            print("Policy file not found. Candidates in results\\:")
+            print("Policy file not found. Candidates:")
             list_candidates()
             print("Then run again with --source file --file <path>.")
             return

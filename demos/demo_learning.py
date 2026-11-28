@@ -18,13 +18,18 @@ snapshot is the whole evaluation. Ties in Q-values are broken toward the lowest 
 an untrained table (all zeros) always picks roll 1.
 
 Usage (from the project folder):
-  python demo_learning.py                                   # N30, seed 0, 300 episodes
-  python demo_learning.py --board N100 --episodes 500 --snapshots 1 5 10 20 50 100 500
-  python demo_learning.py --board N50 --seed 1 --quiet-final    # skip the step-by-step final games
+  python demos/demo_learning.py                                   # N30, seed 0, 300 episodes
+  python demos/demo_learning.py --board N100 --episodes 500 --snapshots 1 5 10 20 50 100 500
+  python demos/demo_learning.py --board N50 --seed 1 --quiet-final    # skip the step-by-step final games
 """
 import argparse
 
 import numpy as np
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
 
 from env import BOARDS, SmartDiceEnv, bfs_min_rolls, board_to_text
 from tabular import ALGOS, epsilon_greedy, train
