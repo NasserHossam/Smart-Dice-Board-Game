@@ -1,5 +1,5 @@
 .venv/
 __pycache__/
 *.pyc
-results/*_model.zip
-results_challenges/*_model.zip
+results/**/*_model.zip
+results_challenges/**/*_model.zip
