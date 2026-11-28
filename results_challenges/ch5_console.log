@@ -1,0 +1,111 @@
+  [dqn N200 seed2] step   20000/200000  episodes=  275  greedy: success=  0%  rolls=1000.0  return= -539.0  t=  25.2s
+  [dqn N200 seed1] step   20000/200000  episodes=  269  greedy: success=  0%  rolls=1000.0  return= -296.0  t=  25.2s
+  [dqn N200 seed0] step   20000/200000  episodes=  262  greedy: success=  0%  rolls=1000.0  return= -294.0  t=  25.2s
+  [dqn N200 seed0] step   40000/200000  episodes=  740  greedy: success=100%  rolls=  18.0  return=  230.0  t=  54.9s
+  [dqn N200 seed2] step   40000/200000  episodes=  756  greedy: success=100%  rolls=  18.0  return=  230.0  t=  55.2s
+  [dqn N200 seed1] step   40000/200000  episodes=  741  greedy: success=100%  rolls=  18.0  return=  230.0  t=  55.4s
+  [dqn N400 seed1] step   40000/400000  episodes=  325  greedy: success=100%  rolls=  53.0  return=  304.0  t=  56.3s
+  [dqn N400 seed2] step   40000/400000  episodes=  342  greedy: success=100%  rolls=  39.0  return=  318.0  t=  56.1s
+  [dqn N400 seed0] step   40000/400000  episodes=  333  greedy: success=  0%  rolls=2000.0  return=-1162.0  t=  56.4s
+  [dqn N200 seed0] step   60000/200000  episodes= 1440  greedy: success=100%  rolls=  18.0  return=  230.0  t=  89.6s
+  [dqn N200 seed2] step   60000/200000  episodes= 1454  greedy: success=100%  rolls=  18.0  return=  230.0  t=  90.4s
+  [dqn N200 seed1] step   60000/200000  episodes= 1453  greedy: success=100%  rolls=  19.0  return=  229.0  t=  91.5s
+  [dqn N400 seed0] step   80000/400000  episodes=  864  greedy: success=100%  rolls=  37.0  return=  318.0  t= 125.0s
+  [dqn N400 seed2] step   80000/400000  episodes=  871  greedy: success=100%  rolls=  37.0  return=  318.0  t= 125.8s
+  [dqn N400 seed1] step   80000/400000  episodes=  829  greedy: success=100%  rolls=  35.0  return=  320.0  t= 126.0s
+  [dqn N200 seed0] step   80000/200000  episodes= 2369  greedy: success=100%  rolls=  19.0  return=  229.0  t= 130.0s
+  [dqn N200 seed1] step   80000/200000  episodes= 2375  greedy: success=100%  rolls=  18.0  return=  230.0  t= 130.5s
+  [dqn N200 seed2] step   80000/200000  episodes= 2392  greedy: success=100%  rolls=  18.0  return=  230.0  t= 131.8s
+  [dqn N200 seed2] step  100000/200000  episodes= 3450  greedy: success=100%  rolls=  18.0  return=  230.0  t= 169.6s
+  [dqn N200 seed1] step  100000/200000  episodes= 3422  greedy: success=100%  rolls=  18.0  return=  230.0  t= 170.1s
+  [dqn N200 seed0] step  100000/200000  episodes= 3424  greedy: success=100%  rolls=  18.0  return=  230.0  t= 170.3s
+  [dqn N400 seed0] step  120000/400000  episodes= 1604  greedy: success=100%  rolls=  35.0  return=  320.0  t= 201.7s
+  [dqn N400 seed1] step  120000/400000  episodes= 1572  greedy: success=100%  rolls=  36.0  return=  319.0  t= 202.1s
+  [dqn N400 seed2] step  120000/400000  episodes= 1610  greedy: success=100%  rolls=  37.0  return=  318.0  t= 204.4s
+  [dqn N200 seed0] step  120000/200000  episodes= 4467  greedy: success=100%  rolls=  18.0  return=  230.0  t= 211.5s
+  [dqn N200 seed2] step  120000/200000  episodes= 4499  greedy: success=100%  rolls=  18.0  return=  230.0  t= 212.0s
+  [dqn N200 seed1] step  120000/200000  episodes= 4472  greedy: success=100%  rolls=  18.0  return=  230.0  t= 212.1s
+  [dqn N200 seed2] step  140000/200000  episodes= 5549  greedy: success=100%  rolls=  18.0  return=  230.0  t= 250.3s
+  [dqn N200 seed0] step  140000/200000  episodes= 5518  greedy: success=100%  rolls=  18.0  return=  230.0  t= 251.4s
+  [dqn N200 seed1] step  140000/200000  episodes= 5520  greedy: success=100%  rolls=  18.0  return=  230.0  t= 252.0s
+  [dqn N400 seed1] step  160000/400000  episodes= 2534  greedy: success=100%  rolls=  36.0  return=  319.0  t= 279.6s
+  [dqn N400 seed0] step  160000/400000  episodes= 2564  greedy: success=100%  rolls=  35.0  return=  320.0  t= 280.5s
+  [dqn N400 seed2] step  160000/400000  episodes= 2570  greedy: success=100%  rolls=  35.0  return=  320.0  t= 283.3s
+  [dqn N200 seed2] step  160000/200000  episodes= 6596  greedy: success=100%  rolls=  18.0  return=  230.0  t= 290.2s
+  [dqn N200 seed0] step  160000/200000  episodes= 6564  greedy: success=100%  rolls=  20.0  return=  228.0  t= 290.5s
+  [dqn N200 seed1] step  160000/200000  episodes= 6574  greedy: success=100%  rolls=  18.0  return=  230.0  t= 293.0s
+  [dqn N200 seed2] step  180000/200000  episodes= 7648  greedy: success=100%  rolls=  18.0  return=  230.0  t= 333.6s
+  [dqn N200 seed1] step  180000/200000  episodes= 7622  greedy: success=100%  rolls=  18.0  return=  230.0  t= 336.4s
+  [dqn N200 seed0] step  180000/200000  episodes= 7617  greedy: success=100%  rolls=  18.0  return=  230.0  t= 336.4s
+  [dqn N400 seed1] step  200000/400000  episodes= 3613  greedy: success=100%  rolls=  36.0  return=  319.0  t= 369.1s
+  [dqn N400 seed0] step  200000/400000  episodes= 3642  greedy: success=100%  rolls=  38.0  return=  317.0  t= 373.8s
+  [dqn N200 seed2] step  200000/200000  episodes= 8707  greedy: success=100%  rolls=  18.0  return=  230.0  t= 373.9s
+[ok] N200: 16 ladders, 16 snakes, BFS min rolls 17, best return 230
+[ok] N400: 32 ladders, 32 snakes, BFS min rolls 35, best return 321
+[ok] main boards unchanged
+[ok] N200: best discounted-return policy uses 18 rolls (BFS 17), return 230
+[ok] N400: best discounted-return policy uses 35 rolls (BFS 35), return 320
+[ok] discounted optimum = BFS path on N30/N50/N100
+==> DQN        N200 seed2: final rolls 18 (BFS 17), converged at episode 7964 / step 186000, 378.7s
+  [dqn N400 seed2] step  200000/400000  episodes= 3644  greedy: success=100%  rolls=  36.0  return=  319.0  t= 374.8s
+  [dqn N200 seed1] step  200000/200000  episodes= 8677  greedy: success=100%  rolls=  18.0  return=  230.0  t= 379.1s
+==> Q-Learning N200 seed0: final rolls 19 (BFS 17), converged at episode None / step None, 4.6s
+==> DQN        N200 seed1: final rolls 18 (BFS 17), converged at episode 8544 / step 197500, 383.5s
+  [dqn N200 seed0] step  200000/200000  episodes= 8667  greedy: success=100%  rolls=  18.0  return=  230.0  t= 379.6s
+==> DQN        N200 seed0: final rolls 18 (BFS 17), converged at episode 8561 / step 198000, 384.4s
+==> Q-Learning N200 seed1: final rolls 19 (BFS 17), converged at episode None / step None, 4.7s
+==> Q-Learning N200 seed2: final rolls 21 (BFS 17), converged at episode None / step None, 5.2s
+==> Q-Learning N200 seed3: final rolls 19 (BFS 17), converged at episode None / step None, 4.7s
+==> Q-Learning N200 seed4: final rolls 19 (BFS 17), converged at episode None / step None, 4.2s
+==> Q-Learning N200 seed5: final rolls 20 (BFS 17), converged at episode None / step None, 4.4s
+==> Q-Learning N200 seed6: final rolls 20 (BFS 17), converged at episode None / step None, 4.5s
+==> Q-Learning N200 seed7: final rolls 19 (BFS 17), converged at episode None / step None, 4.1s
+==> Q-Learning N200 seed8: final rolls 19 (BFS 17), converged at episode None / step None, 4.1s
+==> Q-Learning N200 seed9: final rolls 19 (BFS 17), converged at episode None / step None, 4.0s
+==> Q-Learning N400 seed0: final rolls 35 (BFS 35), converged at episode 240 / step 23347, 7.9s
+==> Q-Learning N400 seed3: final rolls 37 (BFS 35), converged at episode 290 / step 26335, 8.0s
+==> Q-Learning N400 seed2: final rolls 37 (BFS 35), converged at episode 230 / step 22699, 18.2s
+==> Q-Learning N400 seed1: final rolls 37 (BFS 35), converged at episode 270 / step 25235, 23.5s
+==> Q-Learning N400 seed4: final rolls 35 (BFS 35), converged at episode 240 / step 23005, 9.0s
+==> Q-Learning N400 seed5: final rolls 35 (BFS 35), converged at episode 300 / step 26952, 8.9s
+==> Q-Learning N400 seed8: final rolls 36 (BFS 35), converged at episode 210 / step 20891, 8.1s
+==> Q-Learning N400 seed7: final rolls 36 (BFS 35), converged at episode 170 / step 17581, 20.7s
+==> Q-Learning N400 seed9: final rolls 37 (BFS 35), converged at episode 300 / step 27293, 13.0s
+==> Q-Learning N400 seed6: final rolls 38 (BFS 35), converged at episode 260 / step 25115, 29.5s
+  [dqn N400 seed1] step  240000/400000  episodes= 4695  greedy: success=100%  rolls=  35.0  return=  320.0  t= 456.7s
+  [dqn N400 seed0] step  240000/400000  episodes= 4723  greedy: success=100%  rolls=  35.0  return=  320.0  t= 461.2s
+  [dqn N400 seed2] step  240000/400000  episodes= 4720  greedy: success=100%  rolls=  35.0  return=  320.0  t= 464.9s
+  [dqn N400 seed1] step  280000/400000  episodes= 5780  greedy: success=100%  rolls=  35.0  return=  320.0  t= 524.6s
+  [dqn N400 seed0] step  280000/400000  episodes= 5803  greedy: success=100%  rolls=  35.0  return=  320.0  t= 529.8s
+  [dqn N400 seed2] step  280000/400000  episodes= 5800  greedy: success=100%  rolls=  35.0  return=  318.0  t= 533.0s
+  [dqn N400 seed1] step  320000/400000  episodes= 6868  greedy: success=100%  rolls=  35.0  return=  320.0  t= 607.4s
+  [dqn N400 seed2] step  320000/400000  episodes= 6884  greedy: success=100%  rolls=  35.0  return=  320.0  t= 610.1s
+  [dqn N400 seed0] step  320000/400000  episodes= 6891  greedy: success=100%  rolls=  35.0  return=  320.0  t= 610.8s
+  [dqn N400 seed1] step  360000/400000  episodes= 7957  greedy: success=100%  rolls=  35.0  return=  320.0  t= 669.8s
+  [dqn N400 seed2] step  360000/400000  episodes= 7969  greedy: success=100%  rolls=  36.0  return=  319.0  t= 670.7s
+  [dqn N400 seed0] step  360000/400000  episodes= 7976  greedy: success=100%  rolls=  35.0  return=  320.0  t= 673.5s
+  [dqn N400 seed2] step  400000/400000  episodes= 9059  greedy: success=100%  rolls=  36.0  return=  319.0  t= 730.3s
+==> DQN        N400 seed2: final rolls 36 (BFS 35), converged at episode 6991 / step 324000, 734.4s
+  [dqn N400 seed1] step  400000/400000  episodes= 9047  greedy: success=100%  rolls=  35.0  return=  320.0  t= 731.7s
+==> DQN        N400 seed1: final rolls 35 (BFS 35), converged at episode 1551 / step 119000, 735.7s
+  [dqn N400 seed0] step  400000/400000  episodes= 9065  greedy: success=100%  rolls=  35.0  return=  320.0  t= 735.0s
+==> DQN        N400 seed0: final rolls 35 (BFS 35), converged at episode 1657 / step 122500, 739.0s
+C:\Users\HP\Desktop\Ejust\Projects\Smart Dice Board Game\challenge5_dqn_vs_tabular.py:234: RuntimeWarning: All-NaN slice encountered
+  return np.nanmedian(np.vstack(ys), axis=0)
+C:\Users\HP\Desktop\Ejust\Projects\Smart Dice Board Game\challenge5_dqn_vs_tabular.py:234: RuntimeWarning: All-NaN slice encountered
+  return np.nanmedian(np.vstack(ys), axis=0)
+C:\Users\HP\Desktop\Ejust\Projects\Smart Dice Board Game\challenge5_dqn_vs_tabular.py:234: RuntimeWarning: All-NaN slice encountered
+  return np.nanmedian(np.vstack(ys), axis=0)
+board   N       algo  seeds  BFS  best_return  disc_opt_rolls  disc_opt_return  share_matching_disc_opt_%  success_%  final_rolls_mean  final_rolls_sd  final_return_mean  conv_episodes_median  conv_episodes_min  conv_episodes_max  conv_steps_median  not_converged  wall_s_median
+  N30  30 Q-Learning     20    4        139.0               4            139.0                      100.0      100.0              4.00            0.00              139.0                  17.5                4.0              260.0              244.0              0            NaN
+  N30  30        DQN      3    4        139.0               4            139.0                      100.0      100.0              4.00            0.00              139.0                 616.0              446.0              664.0             7000.0              0            NaN
+  N50  50 Q-Learning     20    5        159.0               5            159.0                       95.0      100.0              5.05            0.22              158.9                  17.0                7.0              500.0              319.0              1            NaN
+  N50  50        DQN      3    5        159.0               5            159.0                      100.0      100.0              5.00            0.00              159.0                 509.0              412.0              559.0            10000.0              0            NaN
+ N100 100 Q-Learning     20   10        196.0              10            196.0                       95.0      100.0             10.05            0.22              195.9                  20.0               10.0               39.0              685.5              0            NaN
+ N100 100        DQN      3   10        196.0              10            196.0                      100.0      100.0             10.00            0.00              196.0                 575.0              459.0              628.0            17500.0              0            NaN
+ N200 200 Q-Learning     10   17        230.0              18            230.0                        0.0      100.0             19.40            0.70              228.6                   NaN                NaN                NaN                NaN             10           4.45
+ N200 200        DQN      3   17        230.0              18            230.0                      100.0      100.0             18.00            0.00              230.0                8544.0             7964.0             8561.0           197500.0              0         383.50
+ N400 400 Q-Learning     10   35        321.0              35            320.0                       30.0      100.0             36.30            1.06              318.5                 250.0              170.0              300.0            24231.0              0          11.00
+ N400 400        DQN      3   35        321.0              35            320.0                       66.7      100.0             35.33            0.58              319.7                1657.0             1551.0             6991.0           122500.0              0         735.70
+
+Saved: ch5_runs.csv, ch5_summary.csv, ch5_boards.json, ch5_cost_vs_board_size.png, ch5_learning_curves_large.png
