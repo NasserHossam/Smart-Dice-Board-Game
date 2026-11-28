@@ -1,0 +1,51 @@
+  epsilon experiment: 30/360 runs done
+  epsilon experiment: 60/360 runs done
+  epsilon experiment: 90/360 runs done
+  epsilon experiment: 120/360 runs done
+  epsilon experiment: 150/360 runs done
+  epsilon experiment: 180/360 runs done
+  epsilon experiment: 210/360 runs done
+  epsilon experiment: 240/360 runs done
+  epsilon experiment: 270/360 runs done
+  epsilon experiment: 300/360 runs done
+  epsilon experiment: 330/360 runs done
+  epsilon experiment: 360/360 runs done
+
+EPSILON EXPERIMENT (final = greedy policy after training; train_return_mean = average reward per training episode, i.e. the cost of exploring)
+board                      config      algo  n  success_share  final_rolls_mean  final_return_mean  conv_episode_median  conv_steps_median  not_converged  train_return_mean  early_rolls_ratio_median
+  N50         greedy only (eps 0) qlearning 10            1.0               5.4              154.4                  6.5               74.5              4             154.28                      1.11
+  N50         greedy only (eps 0)     sarsa 10            1.0               5.4              154.4                  6.5               74.5              4             154.28                      1.11
+  N50                constant 0.1 qlearning 10            1.0               5.3              154.5                  6.0               85.0              2             150.53                      1.10
+  N50                constant 0.1     sarsa 10            1.0               5.1              156.8                  9.0               90.0              1             152.30                      1.11
+  N50        1.0 to 0.01 over 70% qlearning 10            1.0               5.0              159.0                 19.0              403.5              0             150.68                      1.14
+  N50        1.0 to 0.01 over 70%     sarsa 10            1.0               5.0              159.0                 26.5              538.5              0             151.15                      1.18
+  N50 1.0 to 0.05 over 70% (main) qlearning 10            1.0               5.0              159.0                 16.0              325.0              0             146.29                      1.15
+  N50 1.0 to 0.05 over 70% (main)     sarsa 10            1.0               5.0              159.0                 16.5              380.0              0             146.16                      1.18
+  N50         1.0 to 0.2 over 70% qlearning 10            1.0               5.0              159.0                 18.0              382.5              0             137.02                      1.15
+  N50         1.0 to 0.2 over 70%     sarsa 10            1.0               5.0              159.0                 23.5              551.0              0             137.91                      1.18
+  N50        1.0 to 0.05 over 30% qlearning 10            1.0               5.1              158.9                 16.0              354.0              1             152.49                      1.13
+  N50        1.0 to 0.05 over 30%     sarsa 10            1.0               5.0              159.0                 27.5              564.0              0             152.64                      1.17
+ N100         greedy only (eps 0) qlearning 10            1.0              10.6              195.4                 12.5              234.0              2             195.15                      1.17
+ N100         greedy only (eps 0)     sarsa 10            1.0              10.6              195.4                 12.5              234.0              2             195.15                      1.17
+ N100                constant 0.1 qlearning 10            1.0              10.7              195.3                 15.0              278.0              1             189.33                      1.23
+ N100                constant 0.1     sarsa 10            1.0              10.0              196.0                 15.0              300.0              0             190.31                      1.23
+ N100        1.0 to 0.01 over 70% qlearning 10            1.0              10.0              196.0                 17.5              599.0              0             185.53                      1.18
+ N100        1.0 to 0.01 over 70%     sarsa 10            1.0              10.0              196.0                 30.0             1107.0              0             185.73                      1.27
+ N100 1.0 to 0.05 over 70% (main) qlearning 10            1.0              10.0              196.0                 16.5              607.0              0             180.07                      1.16
+ N100 1.0 to 0.05 over 70% (main)     sarsa 10            1.0              10.0              196.0                 40.5             1369.0              0             180.57                      1.35
+ N100         1.0 to 0.2 over 70% qlearning 10            1.0              10.0              196.0                 16.0              583.5              0             167.01                      1.17
+ N100         1.0 to 0.2 over 70%     sarsa 10            1.0              10.0              196.0                 29.0             1054.0              0             168.71                      1.26
+ N100        1.0 to 0.05 over 30% qlearning 10            1.0              10.0              196.0                 19.5              717.0              0             188.10                      1.15
+ N100        1.0 to 0.05 over 30%     sarsa 10            1.0              10.0              196.0                 25.0              889.5              0             188.31                      1.25
+ N200         greedy only (eps 0) qlearning 10            1.0              21.5              224.4                  NaN                NaN             10             223.79                      1.51
+ N200         greedy only (eps 0)     sarsa 10            1.0              21.5              224.4                  NaN                NaN             10             223.79                      1.51
+ N200                constant 0.1 qlearning 10            1.0              21.2              220.5                 50.0             1450.0              9             210.43                      1.55
+ N200                constant 0.1     sarsa 10            1.0              20.8              220.9                  NaN                NaN             10             210.92                      1.61
+ N200        1.0 to 0.01 over 70% qlearning 10            1.0              19.9              228.1                  NaN                NaN             10             205.69                      1.64
+ N200        1.0 to 0.01 over 70%     sarsa 10            1.0              20.2              227.8                  NaN                NaN             10             206.32                      2.45
+ N200 1.0 to 0.05 over 70% (main) qlearning 10            1.0              19.4              228.6                  NaN                NaN             10             195.02                      1.51
+ N200 1.0 to 0.05 over 70% (main)     sarsa 10            1.0              19.5              228.5                  NaN                NaN             10             195.59                      1.92
+ N200         1.0 to 0.2 over 70% qlearning 10            1.0              18.0              230.0               1110.0            44593.0              0             169.09                      1.51
+ N200         1.0 to 0.2 over 70%     sarsa 10            1.0              19.5              228.5                  NaN                NaN             10             170.66                      2.33
+ N200        1.0 to 0.05 over 30% qlearning 10            1.0              19.7              228.3                  NaN                NaN             10             211.81                      1.56
+ N200        1.0 to 0.05 over 30%     sarsa 10            1.0              20.6              227.4                  NaN                NaN             10             210.44                      4.22
