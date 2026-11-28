@@ -1,0 +1,40 @@
+{
+  "algo": "dqn",
+  "board": "N200",
+  "seed": 1,
+  "bfs_optimum": 17,
+  "timesteps_planned": 200000,
+  "timesteps_run": 200000,
+  "episodes_run": 8677,
+  "stopped_by_time_limit": false,
+  "elapsed_s": 379.11,
+  "steps_per_sec": 527.6,
+  "converged": true,
+  "convergence_timesteps": 197500,
+  "convergence_episode": 8544,
+  "optimal_timesteps": null,
+  "optimal_episode": null,
+  "final_eval_success": 1.0,
+  "final_eval_moves": 18.0,
+  "final_eval_return": 230.0,
+  "reward_scale": 0.1,
+  "eval_every": 500,
+  "hyperparameters": {
+    "learning_rate": 0.001,
+    "buffer_size": 50000,
+    "learning_starts": 500,
+    "batch_size": 64,
+    "gamma": 0.99,
+    "train_freq": 4,
+    "gradient_steps": 1,
+    "target_update_interval": 250,
+    "exploration_initial_eps": 1.0,
+    "exploration_final_eps": 0.05,
+    "exploration_fraction": 0.4,
+    "net_arch": [
+      64,
+      64
+    ]
+  },
+  "rewards": "default"
+}
