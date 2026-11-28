@@ -25,12 +25,12 @@ WHAT THE SCRIPT DOES
   3. MONTE CARLO simulation of games in the env, compared with the exact numbers.
   4. TD learning (Q-Learning and SARSA, alpha constant, no exploration is needed) over many episodes;
      reports how close the learned values get to the exact values, and whether the two agree.
-  5. Tables (CSV) and three PNG plots in results_challenges/.
+  5. Tables (CSV) and three PNG plots in results_challenges/ch1/.
 
 Usage (small pilot first to measure time):
-  python challenge1_random_dice.py --episodes 500 --seeds 0 --mc-games 500
+  python challenges/challenge1_random_dice.py --episodes 500 --seeds 0 --mc-games 500
 Full run (settings are printed and saved):
-  python challenge1_random_dice.py --episodes 20000 --seeds 0 1 2 3 4 --mc-games 20000 --time-limit 120
+  python challenges/challenge1_random_dice.py --episodes 20000 --seeds 0 1 2 3 4 --mc-games 20000 --time-limit 120
 """
 from __future__ import annotations
 
@@ -47,9 +47,15 @@ import numpy as np
 import pandas as pd
 from gymnasium import spaces
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
+
+from paths import challenge_dir
 from env import BOARDS, DEFAULT_REWARDS, Board, SmartDiceEnv, bfs_min_rolls, validate_board
 
-OUT = Path(__file__).parent / "results_challenges"
+OUT = challenge_dir(1)   # results_challenges/ch1/
 
 
 # --------------------------------------------------------------------------- transition (one place)

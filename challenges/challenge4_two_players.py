@@ -28,8 +28,8 @@ DESIGN (my choices; the report should say so)
     policies are scored exactly. gamma = 1 (episodic win/loss), alpha 0.1, epsilon 1.0 -> 0.05 over 70%.
 
 Usage (pilot first):
-  python challenge4_two_players.py --episodes 4000 --seeds 0 --mc-games 500 --boards N30
-  python challenge4_two_players.py --episodes 40000 --seeds 0 1 2
+  python challenges/challenge4_two_players.py --episodes 4000 --seeds 0 --mc-games 500 --boards N30
+  python challenges/challenge4_two_players.py --episodes 40000 --seeds 0 1 2
 """
 from __future__ import annotations
 
@@ -46,9 +46,15 @@ import numpy as np
 import pandas as pd
 from gymnasium import spaces
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
+
+from paths import challenge_dir
 from env import BOARDS, Board, next_square, optimal_roll_sets, validate_board
 
-OUT = Path(__file__).parent / "results_challenges"
+OUT = challenge_dir(4)   # results_challenges/ch4/
 OPPONENTS = ("random", "rule", "bfs")
 INVALID, SNAKE, NORMAL, LADDER, GOAL = 0, 1, 2, 3, 4
 

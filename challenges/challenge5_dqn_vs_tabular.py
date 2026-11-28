@@ -21,9 +21,9 @@ DESIGN (choices of mine; the report says so)
     nothing is re-run for them.
 
 Usage (pilot first):
-  python challenge5_dqn_vs_tabular.py --boards N200 --q-seeds 0 --dqn-seeds 0 --dqn-scale 100 --workers 2
-  python challenge5_dqn_vs_tabular.py --workers 6
-Outputs: results_challenges/ch5_*  (per-run logs, runs table, summary table, plots, board layouts)
+  python challenges/challenge5_dqn_vs_tabular.py --boards N200 --q-seeds 0 --dqn-seeds 0 --dqn-scale 100 --workers 2
+  python challenges/challenge5_dqn_vs_tabular.py --workers 6
+Outputs: results_challenges/ch5/ch5_*  (per-run logs, runs table, summary table, plots, board layouts)
 """
 from __future__ import annotations
 
@@ -40,14 +40,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
+
 from analyze_tabular import stable_to_end
 from challenge3_dynamic_board import generate_layout
 from env import BOARDS, Board, bfs_min_rolls, validate_board
 from evaluate import optimal_return
+from paths import DEEP, TABLES, TABULAR, challenge_dir
 
-ROOT = Path(__file__).parent
-OUT = ROOT / "results_challenges"
-MAIN = ROOT / "results"
+OUT = challenge_dir(5)   # results_challenges/ch5/
 
 # --------------------------------------------------------------------------- larger boards
 # layout ids were fixed once; the boards are registered at import so worker processes see them too.
@@ -168,7 +172,7 @@ def self_test():
 # --------------------------------------------------------------------------- summary + plots
 def main_project_rows() -> pd.DataFrame:
     """Q-Learning (seeds 0-19) and DQN (seeds 0-2) on N30/N50/N100 from the saved main results."""
-    per_run = pd.read_csv(MAIN / "final_table_per_run.csv")
+    per_run = pd.read_csv(TABLES / "final_table_per_run.csv")
     per_run = per_run[per_run.algo.isin(["qlearning", "dqn"])].copy()
     rows = []
     for _, r in per_run.iterrows():
@@ -177,7 +181,7 @@ def main_project_rows() -> pd.DataFrame:
             steps = r.conv_timesteps if pd.notna(r.conv_timesteps) else None
         else:   # tabular: environment steps = training rolls up to and including the convergence episode
             tag = "" if r.group == "main" else "_extra"
-            log = pd.read_csv(MAIN / f"tabular_qlearning_{r.board}_seed{int(r.seed)}{tag}_log.csv")
+            log = pd.read_csv(TABULAR / f"tabular_qlearning_{r.board}_seed{int(r.seed)}{tag}_log.csv")
             steps = None if conv is None else int(log.train_moves.iloc[:conv].sum())
         rows.append({"board": r.board, "algo": "Q-Learning" if r.algo == "qlearning" else "DQN", "seed": r.seed,
                      "bfs": int(r.bfs), "final_success": r.final_success, "final_rolls": r.final_moves,
@@ -261,9 +265,9 @@ def make_plots(summary: pd.DataFrame):
     fig, axes = plt.subplots(1, len(boards), figsize=(5 * len(boards), 4.2))
     for a, board in zip(axes, boards):
         bfs = bfs_min_rolls(BOARDS[board])
-        src_dir, prefix = (MAIN, "") if board == "N100" else (OUT, "ch5_")
+        src_dir, prefix = (DEEP, "") if board == "N100" else (OUT, "ch5_")
         if board == "N100":
-            tab = sorted(MAIN.glob(f"tabular_qlearning_{board}_seed*_log.csv"))
+            tab = sorted(TABULAR.glob(f"tabular_qlearning_{board}_seed*_log.csv"))
             tab = [p for p in tab if "pilot" not in p.name]
         else:
             tab = sorted(OUT.glob(f"ch5_qlearning_{board}_seed*_log.csv"))

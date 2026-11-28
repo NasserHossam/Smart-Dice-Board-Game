@@ -27,11 +27,11 @@ WHAT THE SCRIPT DOES
   4. Q-Learning and SARSA on the 12*N-observation environment. Their greedy policy is evaluated EXACTLY
      (no sampling noise) and compared with the optimal policy: regret in discounted return and the
      share of decision states where it agrees with the optimal choice.
-  5. CSV tables and PNG plots in results_challenges/.
+  5. CSV tables and PNG plots in results_challenges/ch2/.
 
 Usage (pilot first):
-  python challenge2_shield.py --episodes 3000 --seeds 0 --mc-games 2000
-  python challenge2_shield.py --episodes 50000 --seeds 0 1 2 3 4 --mc-games 10000 --time-limit 300
+  python challenges/challenge2_shield.py --episodes 3000 --seeds 0 --mc-games 2000
+  python challenges/challenge2_shield.py --episodes 50000 --seeds 0 1 2 3 4 --mc-games 10000 --time-limit 300
 """
 from __future__ import annotations
 
@@ -48,9 +48,15 @@ import numpy as np
 import pandas as pd
 from gymnasium import spaces
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
+
+from paths import challenge_dir
 from env import BOARDS, DEFAULT_REWARDS, Board, SmartDiceEnv, validate_board
 
-OUT = Path(__file__).parent / "results_challenges"
+OUT = challenge_dir(2)   # results_challenges/ch2/
 NAMES = {"qlearning": "Q-Learning", "sarsa": "SARSA"}
 
 

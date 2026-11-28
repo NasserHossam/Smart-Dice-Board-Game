@@ -28,8 +28,8 @@ DESIGN (all of it is a choice of mine; the report should say so)
     epsilon 1.0 -> 0.05 over the first 70% of training.
 
 Usage (pilot first):
-  python challenge3_dynamic_board.py --episodes 3000 --seeds 0 --n-test 30 --adapt-layouts 5
-  python challenge3_dynamic_board.py --episodes 30000 --seeds 0 1 2
+  python challenges/challenge3_dynamic_board.py --episodes 3000 --seeds 0 --n-test 30 --adapt-layouts 5
+  python challenges/challenge3_dynamic_board.py --episodes 30000 --seeds 0 1 2
 """
 from __future__ import annotations
 
@@ -46,9 +46,15 @@ import numpy as np
 import pandas as pd
 from gymnasium import spaces
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
+
+from paths import challenge_dir
 from env import BOARDS, DEFAULT_REWARDS, Board, SmartDiceEnv, bfs_distances_to_goal, validate_board
 
-OUT = Path(__file__).parent / "results_challenges"
+OUT = challenge_dir(3)   # results_challenges/ch3/
 INVALID, SNAKE, NORMAL, LADDER, GOAL = 0, 1, 2, 3, 4
 N_VIEWS = 5 ** 6
 TRAIN_BASE, TEST_BASE = 0, 100_000          # layout ids: training pool uses 0.., held-out uses 100000..

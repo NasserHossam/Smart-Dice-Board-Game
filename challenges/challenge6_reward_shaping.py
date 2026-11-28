@@ -3,7 +3,7 @@ challenge6_reward_shaping.py - CHALLENGE 6: reward optimization / reward shaping
 
 Question from the handout: does reward shaping make learning faster, or does it create unintended behaviour?
 Part 1 of Challenge 6 is the reward-function experiment already in experiments.py (five reward functions on
-N50, results/exp_reward_N50_*). This script adds Part 2: SHAPING.
+N50, results/experiments/exp_reward_N50_*). This script adds Part 2: SHAPING.
 
 DESIGN (choices of mine; the report says so)
   Five reward setups. The agent learns from the setup's reward; every evaluation (rolls, success, return,
@@ -25,9 +25,9 @@ DESIGN (choices of mine; the report says so)
   from that checkpoint until the end of training).
 
 Usage (pilot first):
-  python challenge6_reward_shaping.py --boards N50 --seeds 0 1 --episodes 500
-  python challenge6_reward_shaping.py --workers 4
-Outputs: results_challenges/ch6_runs.csv, ch6_summary.csv, ch6_curves.csv, ch6_*.png
+  python challenges/challenge6_reward_shaping.py --boards N50 --seeds 0 1 --episodes 500
+  python challenges/challenge6_reward_shaping.py --workers 4
+Outputs: results_challenges/ch6/ch6_runs.csv, ch6_summary.csv, ch6_curves.csv, ch6_*.png
 """
 from __future__ import annotations
 
@@ -43,12 +43,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # project modules live in src/
+
 import challenge5_dqn_vs_tabular  # noqa: F401  (registers the N200 board in env.BOARDS)
 from analyze_tabular import stable_to_end
 from env import BOARDS, SmartDiceEnv, bfs_min_rolls
+from paths import challenge_dir
 from tabular import epsilon_greedy, greedy_action
 
-OUT = Path(__file__).parent / "results_challenges"
+OUT = challenge_dir(6)   # results_challenges/ch6/
 SETUPS = ["default", "sparse", "sparse+PBRS", "default+PBRS", "progress_bonus"]
 SPARSE = {"goal": 100.0, "ladder": 0.0, "normal": 0.0, "snake": 0.0, "invalid": 0.0}
 PHI_SCALE, BONUS = 50.0, 2.0
