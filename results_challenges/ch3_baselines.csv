@@ -1,0 +1,4 @@
+policy,success,mean_excess
+BFS optimum (knows the layout),1.0,0.0
+hand-written local rule,1.0,0.175
+uniformly random rolls,1.0,14.99225
