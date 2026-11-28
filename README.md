@@ -49,6 +49,7 @@ Smart Dice Board Game/
 │   └── plots.py           all required figures
 ├── challenges/            challenge1_random_dice.py ... challenge6_reward_shaping.py
 ├── demos/                 demo.py (play one game), demo_learning.py (watch Q-Learning and SARSA learn)
+├── app/                   live_game.py: watch any player live in the browser (Streamlit)
 ├── results/
 │   ├── tabular/           Q-Learning and SARSA runs: *_log.csv, *_Q.npy, *_summary.json
 │   ├── deep_rl/           DQN, PPO, A2C runs: *_episodes.csv, *_evals.csv, *_policy.npy, *_summary.json
@@ -108,6 +109,14 @@ python demos/demo.py --board N30 --source file --file results\deep_rl\sb3_ppo_N3
 ```
 
 `demos/demo.py --source bfs` (also the default) plays the BFS reference path. It is a ruler, not a learned policy.
+
+## Live game in the browser
+
+```
+streamlit run app/live_game.py
+```
+
+This opens a page at http://localhost:8501 where you pick a board (N30, N50, N100, or the Challenge 5 boards N200 and N400) and a player (BFS shortest path, random rolls, or any trained Q-Learning, SARSA, DQN, PPO or A2C seed), then press Play or Step to watch the game roll by roll on a drawn board. It shows each roll, the reward, the total return, and the rolls compared with the BFS minimum. The page uses the real environment from `src/env.py` and only reads the saved policies; it never trains or changes anything.
 
 ## Convergence criterion
 
