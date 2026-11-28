@@ -10,8 +10,8 @@ RULE (strict, same for tabular and deep RL):
   Cost of convergence is reported in training EPISODES and in ENVIRONMENT STEPS (rolls) so the
   tabular and deep methods can be put on the same axis.
 
-Run from the project folder:  python unified_convergence.py
-Writes results/unified_convergence_per_run.csv and results/unified_convergence_summary.csv
+Run from the project folder:  python src/unified_convergence.py
+Writes results/tables/unified_convergence_per_run.csv and unified_convergence_summary.csv
 """
 import re
 from pathlib import Path
@@ -21,7 +21,7 @@ import pandas as pd
 
 from env import BOARDS, bfs_min_rolls
 
-RES = Path(__file__).parent / "results"
+from paths import DEEP, TABLES, TABULAR
 SUCC, SLACK = 0.95, 1.10
 
 
@@ -51,7 +51,7 @@ def analyse(ev: pd.DataFrame, bfs: int):
 
 
 def tabular_rows():
-    for f in sorted(RES.glob("tabular_*_log.csv")):
+    for f in sorted(TABULAR.glob("tabular_*_log.csv")):
         m = re.fullmatch(r"tabular_(qlearning|sarsa)_(N\d+)_seed(\d+)(_extra)?_log", f.stem)
         if not m:                       # skips *_pilot_log.csv and anything unexpected
             continue
@@ -64,7 +64,7 @@ def tabular_rows():
 
 
 def sb3_rows():
-    for f in sorted(RES.glob("sb3_*_evals.csv")):
+    for f in sorted(DEEP.glob("sb3_*_evals.csv")):
         m = re.fullmatch(r"sb3_(dqn|ppo|a2c)_(N\d+)_seed(\d+)_evals", f.stem)
         if not m:
             continue
@@ -90,7 +90,7 @@ def main():
             rows.append({"group": group, "algo": algo, "board": board, "seed": seed, "file": fname,
                          "bfs": bfs, "episodes_total": ep_total, **r})
     per = pd.DataFrame(rows)
-    per.to_csv(RES / "unified_convergence_per_run.csv", index=False)
+    per.to_csv(TABLES / "unified_convergence_per_run.csv", index=False)
 
     order = {"qlearning": 0, "sarsa": 1, "dqn": 2, "ppo": 3, "a2c": 4}
     summ = []
@@ -104,7 +104,7 @@ def main():
     sdf["_o"] = sdf.algo.map(order)
     sdf["_b"] = sdf.board.str[1:].astype(int)
     sdf = sdf.sort_values(["_b", "_o"]).drop(columns=["_o", "_b"])
-    sdf.to_csv(RES / "unified_convergence_summary.csv", index=False)
+    sdf.to_csv(TABLES / "unified_convergence_summary.csv", index=False)
     with pd.option_context("display.width", 200, "display.max_columns", 20):
         print(sdf.to_string(index=False))
     print(f"\nRuns analysed: {len(per)} "

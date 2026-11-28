@@ -3,21 +3,22 @@ pilot_timing.py - measure how fast DQN, PPO and A2C run on YOUR machine, before 
 
 It trains each algorithm for a small number of steps (default 3000), including the cost of the
 periodic greedy evaluation, and prints steps/second plus a NAIVE linear estimate of the time for
-longer runs. Nothing is saved except results/pilot_timing.csv. Pilot learning results are not
+longer runs. Nothing is saved except results/tables/pilot_timing.csv. Pilot learning results are not
 for the report; only the speed is used.
 
 Caveat: the estimate assumes constant speed. DQN only starts gradient updates after 500 steps and
 PPO/A2C cost per step can change, so treat the numbers as rough and always keep --time-limit.
 
-Usage:  python pilot_timing.py
-        python pilot_timing.py --timesteps 5000 --boards N30 N100
+Usage:  python src/pilot_timing.py
+        python src/pilot_timing.py --timesteps 5000 --boards N30 N100
 """
 import argparse
 
 import pandas as pd
 
 from env import BOARDS
-from sb3_train import ALGOS, RESULTS_DIR, train_one
+from paths import TABLES
+from sb3_train import ALGOS, train_one
 
 
 def main():
@@ -40,12 +41,12 @@ def main():
     df = pd.DataFrame(rows)
     for target in (20_000, 50_000, 100_000, 200_000):
         df[f"est_min_{target // 1000}k"] = (target / df.steps_per_sec / 60).round(1)
-    RESULTS_DIR.mkdir(exist_ok=True)
-    df.to_csv(RESULTS_DIR / "pilot_timing.csv", index=False)
+    TABLES.mkdir(parents=True, exist_ok=True)
+    df.to_csv(TABLES / "pilot_timing.csv", index=False)
     pd.set_option("display.width", 200)
     print("\nNAIVE estimate of minutes PER RUN (linear extrapolation of the pilot speed):")
     print(df.drop(columns=["episodes", "stopped_by_time"]).to_string(index=False))
-    print("\nSaved results/pilot_timing.csv")
+    print("\nSaved results/tables/pilot_timing.csv")
 
 
 if __name__ == "__main__":

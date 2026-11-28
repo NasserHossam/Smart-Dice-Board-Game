@@ -28,7 +28,7 @@ CONVERGENCE CRITERION (used in the report):
   EQUAL to the BFS optimum (the 10% rule can accept a policy that is 1 roll slower on N100).
 
 Example (small pilot first!):
-  python tabular.py --board N30 --algo both --episodes 300 --seeds 0
+  python src/tabular.py --board N30 --algo both --episodes 300 --seeds 0
 """
 from __future__ import annotations
 
@@ -42,7 +42,9 @@ import pandas as pd
 
 from env import BOARDS, SmartDiceEnv, bfs_min_rolls
 
-RESULTS_DIR = Path(__file__).parent / "results"
+from paths import TABULAR
+
+RESULTS_DIR = TABULAR   # results/tabular/
 ALGOS = ("qlearning", "sarsa")
 
 

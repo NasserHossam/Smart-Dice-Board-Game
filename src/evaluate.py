@@ -1,9 +1,9 @@
 """
 evaluate.py - builds the final tables from everything saved in results/.
 
-Reads  : results/tabular_*_log.csv / _Q.npy   (Q-Learning, SARSA)
-         results/sb3_*_summary.json / _evals.csv / _episodes.csv / _policy.npy   (DQN, PPO, A2C)
-Writes : results/final_table_per_run.csv, results/final_table_summary.csv, results/random_baseline.csv
+Reads  : results/tabular/tabular_*_log.csv / _Q.npy   (Q-Learning, SARSA)
+         results/deep_rl/sb3_*_summary.json / _evals.csv / _episodes.csv / _policy.npy   (DQN, PPO, A2C)
+Writes : results/tables/final_table_per_run.csv, final_table_summary.csv, random_baseline.csv
 Prints : the summary table (one block per board).
 
 DEFINITIONS (put these in the report)
@@ -20,7 +20,7 @@ DEFINITIONS (put these in the report)
   soft_last20        share of the last 20% of checkpoints that met the convergence criterion
                      (a softer stability number, useful when a run is 'not converged').
 
-Usage:  python evaluate.py
+Usage:  python src/evaluate.py
 """
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ from analyze_tabular import PAT as TAB_PAT
 from analyze_tabular import analyze_run
 from env import BOARDS, DEFAULT_REWARDS, bfs_min_rolls, next_square, optimal_roll_sets, run_random_policy
 
-RESULTS = Path(__file__).parent / "results"
+from paths import DEEP, TABLES, TABULAR
 SB3_PAT = re.compile(r"sb3_(dqn|ppo|a2c)_(N\d+)_seed(\d+)(.*)_summary\.json$")
 ALGO_ORDER = ["qlearning", "sarsa", "dqn", "ppo", "a2c"]
 NAMES = {"qlearning": "Q-Learning", "sarsa": "SARSA", "dqn": "DQN", "ppo": "PPO", "a2c": "A2C"}
@@ -128,7 +128,7 @@ def tabular_row(path: Path) -> dict:
     ev = log.dropna(subset=["eval_success"])
     b = BOARDS[board]
     stem = path.name[: -len("_log.csv")]
-    Q = np.load(RESULTS / f"{stem}_Q.npy")
+    Q = np.load(path.parent / f"{stem}_Q.npy")
     visited = (Q != 0).any(axis=1)
     agree, n_cmp = policy_agreement(b, Q.argmax(axis=1) + 1, skip=~visited)
     row = {
@@ -149,10 +149,10 @@ def deep_row(path: Path) -> dict:
     algo, board, seed, tag = SB3_PAT.match(path.name).groups()
     stem = path.name[: -len("_summary.json")]
     s = json.load(open(path))
-    ev = pd.read_csv(RESULTS / f"{stem}_evals.csv")
-    eps = pd.read_csv(RESULTS / f"{stem}_episodes.csv")
+    ev = pd.read_csv(path.parent / f"{stem}_evals.csv")
+    eps = pd.read_csv(path.parent / f"{stem}_episodes.csv")
     b = BOARDS[board]
-    policy = np.load(RESULTS / f"{stem}_policy.npy")
+    policy = np.load(path.parent / f"{stem}_policy.npy")
     agree, n_cmp = policy_agreement(b, policy + 1)
     bfs = s["bfs_optimum"]
     ok_strict = (ev["eval_success"] >= 0.95) & (ev["eval_moves"] <= bfs + 1e-9)
@@ -174,10 +174,10 @@ def deep_row(path: Path) -> dict:
 
 def build_per_run() -> pd.DataFrame:
     rows = []
-    for p in sorted(RESULTS.glob("tabular_*_log.csv")):
+    for p in sorted(TABULAR.glob("tabular_*_log.csv")):
         if TAB_PAT.match(p.name) and "pilot" not in p.name:
             rows.append(tabular_row(p))
-    for p in sorted(RESULTS.glob("sb3_*_summary.json")):
+    for p in sorted(DEEP.glob("sb3_*_summary.json")):
         if SB3_PAT.match(p.name) and "pilot" not in p.name:
             rows.append(deep_row(p))
     df = pd.DataFrame(rows)
@@ -235,12 +235,12 @@ def main():
     if df.empty:
         print("No results found in results/. Run tabular.py and sb3_train.py first.")
         return
-    RESULTS.mkdir(exist_ok=True)
-    df.to_csv(RESULTS / "final_table_per_run.csv", index=False)
+    TABLES.mkdir(parents=True, exist_ok=True)
+    df.to_csv(TABLES / "final_table_per_run.csv", index=False)
     summ = summarize(df)
-    summ.to_csv(RESULTS / "final_table_summary.csv", index=False)
+    summ.to_csv(TABLES / "final_table_summary.csv", index=False)
     rb = random_baseline()
-    rb.to_csv(RESULTS / "random_baseline.csv", index=False)
+    rb.to_csv(TABLES / "random_baseline.csv", index=False)
 
     pd.set_option("display.width", 300)
     pd.set_option("display.max_columns", 50)

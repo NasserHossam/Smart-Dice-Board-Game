@@ -1,5 +1,5 @@
 """
-plots.py - all required figures, saved as PNG in results/.
+plots.py - all required figures, saved as PNG in results/figures/.
 
   plot_reward_vs_episodes.png     total (training) reward per episode vs episodes, all 5 algorithms, 3 boards
   plot_moves_vs_episodes.png      moves (rolls) per training episode vs episodes
@@ -16,7 +16,7 @@ How to read them (say this in the report):
     often ~100% from the start, because the board has no dead ends; learning shows up as fewer moves
     and higher reward, and in the greedy-policy panels.
 
-Usage:  python plots.py
+Usage:  python src/plots.py
 """
 from __future__ import annotations
 
@@ -32,7 +32,9 @@ import pandas as pd
 
 from analyze_tabular import PAT as TAB_PAT
 from env import BOARDS, bfs_min_rolls
-from evaluate import ALGO_ORDER, NAMES, RESULTS, build_per_run
+from evaluate import ALGO_ORDER, NAMES, build_per_run
+from paths import DEEP, FIGURES
+from paths import TABULAR as TABULAR_DIR   # TABULAR below is the tuple of tabular algorithm names
 
 COLORS = {"qlearning": "#1f77b4", "sarsa": "#ff7f0e", "dqn": "#2ca02c", "ppo": "#d62728", "a2c": "#9467bd"}
 TABULAR = ("qlearning", "sarsa")
@@ -43,7 +45,7 @@ def load_runs(algo: str, board: str) -> list:
     """List of dicts: per-episode arrays (ret, moves, succ) and checkpoint table ev."""
     runs = []
     if algo in TABULAR:
-        for p in sorted(RESULTS.glob(f"tabular_{algo}_{board}_seed*_log.csv")):
+        for p in sorted(TABULAR_DIR.glob(f"tabular_{algo}_{board}_seed*_log.csv")):
             if "pilot" in p.name or not TAB_PAT.match(p.name):
                 continue
             d = pd.read_csv(p)
@@ -52,7 +54,7 @@ def load_runs(algo: str, board: str) -> list:
             runs.append({"ret": d["train_return"].to_numpy(), "moves": d["train_moves"].to_numpy(),
                          "succ": d["train_success"].to_numpy(float), "ev": ev})
     else:
-        for p in sorted(RESULTS.glob(f"sb3_{algo}_{board}_seed*_episodes.csv")):
+        for p in sorted(DEEP.glob(f"sb3_{algo}_{board}_seed*_episodes.csv")):
             if "pilot" in p.name:
                 continue
             e = pd.read_csv(p)
@@ -133,7 +135,7 @@ def fig_training_metric(key, ylabel, fname, window=20, hline=None, ylim=None):
         _style(ax, f"{board} (N={BOARDS[board].n})", "training episode (log scale)", ylabel)
     axes[0].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(RESULTS / fname, dpi=130)
+    fig.savefig(FIGURES / fname, dpi=130)
     plt.close(fig)
 
 
@@ -154,7 +156,7 @@ def fig_success():
         _style(axes[1, j], f"{board}: greedy policy", "training episode (log)", "% of seeds whose greedy policy succeeds")
     axes[0, 0].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(RESULTS / "plot_success_vs_episodes.png", dpi=130)
+    fig.savefig(FIGURES / "plot_success_vs_episodes.png", dpi=130)
     plt.close(fig)
 
 
@@ -186,7 +188,7 @@ def fig_q_vs_sarsa(per_run: pd.DataFrame):
     axes[0, 0].legend(fontsize=8)
     axes[1, 0].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(RESULTS / "plot_q_vs_sarsa.png", dpi=130)
+    fig.savefig(FIGURES / "plot_q_vs_sarsa.png", dpi=130)
     plt.close(fig)
 
 
@@ -220,7 +222,7 @@ def fig_deep_timesteps(per_run: pd.DataFrame):
         axes[1, j].grid(alpha=0.3)
     axes[0, 0].legend(fontsize=8)
     fig.tight_layout()
-    fig.savefig(RESULTS / "plot_deep_vs_timesteps.png", dpi=130)
+    fig.savefig(FIGURES / "plot_deep_vs_timesteps.png", dpi=130)
     plt.close(fig)
 
 
@@ -245,7 +247,7 @@ def fig_convergence(per_run: pd.DataFrame):
         ax.set_ylabel("episodes (log); bar = median")
         ax.grid(alpha=0.3)
     fig.tight_layout()
-    fig.savefig(RESULTS / "plot_convergence.png", dpi=130)
+    fig.savefig(FIGURES / "plot_convergence.png", dpi=130)
     plt.close(fig)
 
 
@@ -269,7 +271,7 @@ def fig_board_size(per_run: pd.DataFrame):
     ax.grid(alpha=0.3)
     ax.legend()
     fig.tight_layout()
-    fig.savefig(RESULTS / "plot_board_size.png", dpi=130)
+    fig.savefig(FIGURES / "plot_board_size.png", dpi=130)
     plt.close(fig)
 
 
@@ -287,8 +289,8 @@ def main():
         fig_deep_timesteps(per_run)
     fig_convergence(per_run)
     fig_board_size(per_run)
-    print("Saved PNG files to results/:")
-    for p in sorted(RESULTS.glob("plot_*.png")):
+    print("Saved PNG files to results/figures/:")
+    for p in sorted(FIGURES.glob("plot_*.png")):
         print("  ", p.name)
 
 

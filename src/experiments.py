@@ -15,10 +15,10 @@ Convergence for the layout experiment uses the same rule as the main results: fr
 the end of training every checkpoint has success >= 95% and rolls <= 1.10 * BFS optimum.
 
 Usage:
-  python experiments.py --which both --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 2000
-  python experiments.py --which reward --board N100 --seeds 0 1 2 3 4
-Outputs: results/exp_reward_<board>_runs.csv + _summary.csv, results/exp_layout_runs.csv + _summary.csv,
-         results/plot_exp_reward.png, results/plot_exp_layout.png
+  python src/experiments.py --which both --seeds 0 1 2 3 4 5 6 7 8 9 --episodes 2000
+  python src/experiments.py --which reward --board N100 --seeds 0 1 2 3 4
+Outputs: results/experiments/exp_reward_<board>_runs.csv + _summary.csv, exp_layout_runs.csv + _summary.csv,
+         results/figures/plot_exp_reward.png, plot_exp_layout.png
 """
 from __future__ import annotations
 
@@ -34,7 +34,8 @@ import pandas as pd
 
 from analyze_tabular import stable_to_end
 from env import BOARDS, Board, SmartDiceEnv, bfs_min_rolls, validate_board
-from evaluate import RESULTS, optimal_return
+from evaluate import optimal_return
+from paths import EXPERIMENTS, FIGURES
 from tabular import train
 
 ALGOS = ("qlearning", "sarsa")
@@ -120,14 +121,14 @@ def run_reward(board_name: str, seeds, episodes: int, time_limit):
                              "reached_own_optimum": (int(abs(ret_own - own_opt) < 1e-6) if not np.isnan(own_opt) else np.nan)})
             print(f"  reward '{cfg}' {NAMES[algo]}: {len(seeds)} seeds in {time.time() - t0:.0f}s", flush=True)
     df = pd.DataFrame(rows)
-    df.to_csv(RESULTS / f"exp_reward_{board_name}_runs.csv", index=False)
+    df.to_csv(EXPERIMENTS / f"exp_reward_{board_name}_runs.csv", index=False)
     summ = (df.groupby(["config", "algo"], sort=False)
             .agg(n=("seed", "count"), success_share=("success", "mean"), rolls_median=("rolls", "median"),
                  reached_bfs_rolls=("reached_bfs_rolls", "mean"), orig_return=("orig_return", "mean"),
                  snakes_hit=("snakes_hit", "mean"), ladders_used=("ladders_used", "mean"),
                  own_optimum_value=("own_optimum", "first"), reached_own_optimum=("reached_own_optimum", "mean"))
             .round(2).reset_index())
-    summ.to_csv(RESULTS / f"exp_reward_{board_name}_summary.csv", index=False)
+    summ.to_csv(EXPERIMENTS / f"exp_reward_{board_name}_summary.csv", index=False)
     print(f"\nREWARD EXPERIMENT on {board_name} (BFS optimum = {bfs} rolls; success/rolls/return measured under the "
           f"ORIGINAL rewards; own_optimum_value = best possible return for that reward, NaN = endless loop possible)")
     pd.set_option("display.width", 250)
@@ -153,7 +154,7 @@ def run_reward(board_name: str, seeds, episodes: int, time_limit):
     axes[0].legend()
     fig.suptitle(f"Effect of the reward function ({board_name}, evaluated under the original rewards)")
     fig.tight_layout()
-    fig.savefig(RESULTS / "plot_exp_reward.png", dpi=130)
+    fig.savefig(FIGURES / "plot_exp_reward.png", dpi=130)
     plt.close(fig)
     return summ
 
@@ -179,7 +180,7 @@ def run_layout(seeds, episodes: int, time_limit):
                              "final_return": float(ev["eval_return"].iloc[-1])})
             print(f"  layout '{name}' {NAMES[algo]}: {len(seeds)} seeds in {time.time() - t0:.0f}s", flush=True)
     df = pd.DataFrame(rows)
-    df.to_csv(RESULTS / "exp_layout_runs.csv", index=False)
+    df.to_csv(EXPERIMENTS / "exp_layout_runs.csv", index=False)
     out = []
     for (layout, algo), g in df.groupby(["layout", "algo"], sort=False):
         out.append({"layout": layout, "algo": NAMES[algo], "n": len(g), "BFS": int(g["bfs"].iloc[0]),
@@ -187,7 +188,7 @@ def run_layout(seeds, episodes: int, time_limit):
                     "not_converged": int(g["conv_episode"].isna().sum()),
                     "final_rolls_mean": round(g["final_moves"].mean(), 2)})
     summ = pd.DataFrame(out)
-    summ.to_csv(RESULTS / "exp_layout_summary.csv", index=False)
+    summ.to_csv(EXPERIMENTS / "exp_layout_summary.csv", index=False)
     print("\nLAYOUT EXPERIMENT (N=50; random_rolls = mean rolls of a random player; convergence in training episodes)")
     pd.set_option("display.width", 250)
     print(summ.to_string(index=False))
@@ -212,7 +213,7 @@ def run_layout(seeds, episodes: int, time_limit):
     ax.grid(alpha=0.3)
     ax.legend()
     fig.tight_layout()
-    fig.savefig(RESULTS / "plot_exp_layout.png", dpi=130)
+    fig.savefig(FIGURES / "plot_exp_layout.png", dpi=130)
     plt.close(fig)
     return summ
 
@@ -225,7 +226,8 @@ def main():
     p.add_argument("--episodes", type=int, default=2000)
     p.add_argument("--time-limit", type=float, default=120, help="max seconds per training run")
     a = p.parse_args()
-    RESULTS.mkdir(exist_ok=True)
+    EXPERIMENTS.mkdir(parents=True, exist_ok=True)
+    FIGURES.mkdir(parents=True, exist_ok=True)
     if a.which in ("reward", "both"):
         run_reward(a.board, a.seeds, a.episodes, a.time_limit)
     if a.which in ("layout", "both"):

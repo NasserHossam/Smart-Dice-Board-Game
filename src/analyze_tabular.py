@@ -1,6 +1,6 @@
 """
 analyze_tabular.py - recompute convergence metrics for ALL saved tabular runs from their
-results/tabular_*_log.csv files (no retraining needed) and print one summary table.
+results/tabular/tabular_*_log.csv files (no retraining needed) and print one summary table.
 
 Metrics (per run), all computed from the greedy-policy checkpoints stored in the log:
   conv_end    : first episode E such that, from E until the END of training, EVERY checkpoint has
@@ -12,8 +12,8 @@ Metrics (per run), all computed from the greedy-policy checkpoints stored in the
 Why "until the end"? A policy that is good at episode 40 but worse again at episode 200 has not
 really converged. The shorter 50-episode window used inside tabular.py can miss this.
 
-Usage:  python analyze_tabular.py
-Outputs: results/tabular_run_table.csv (one row per run), results/tabular_aggregate.csv
+Usage:  python src/analyze_tabular.py
+Outputs: results/tables/tabular_run_table.csv (one row per run), results/tables/tabular_aggregate.csv
 Runs saved with a tag (e.g. _extra) form their own group; 'main' = no tag; pilot files are skipped.
 """
 from __future__ import annotations
@@ -26,7 +26,7 @@ import pandas as pd
 
 from env import bfs_min_rolls
 
-RESULTS = Path(__file__).parent / "results"
+from paths import TABLES, TABULAR
 PAT = re.compile(r"tabular_(qlearning|sarsa)_(N\d+)_seed(\d+)(.*)_log\.csv$")
 
 
@@ -73,7 +73,7 @@ def describe(series: pd.Series):
 
 def main():
     rows = []
-    for p in sorted(RESULTS.glob("tabular_*_log.csv")):
+    for p in sorted(TABULAR.glob("tabular_*_log.csv")):
         m = PAT.match(p.name)
         if not m or "pilot" in p.name:
             continue
@@ -83,7 +83,7 @@ def main():
         print("No tabular logs found in results/. Run tabular.py first.")
         return
     runs = pd.DataFrame(rows).sort_values(["board", "algo", "group", "seed"])
-    runs.to_csv(RESULTS / "tabular_run_table.csv", index=False)
+    runs.to_csv(TABLES / "tabular_run_table.csv", index=False)
 
     agg_rows = []
     for (board, algo), g in runs.groupby(["board", "algo"]):
@@ -106,13 +106,13 @@ def main():
                 "final_return": f"{gg['final_return'].mean():.1f}",
             })
     agg = pd.DataFrame(agg_rows)
-    agg.to_csv(RESULTS / "tabular_aggregate.csv", index=False)
+    agg.to_csv(TABLES / "tabular_aggregate.csv", index=False)
     pd.set_option("display.width", 250)
     print(agg.to_string(index=False))
     print("\nconv_end / opt_end are in EPISODES; mean and sd only over runs that reached them; "
           "not_conv / never_opt count the runs that did not.")
     print("unstable_runs = runs whose greedy policy was exactly optimal at some checkpoint and later got worse.")
-    print("Saved results/tabular_run_table.csv and results/tabular_aggregate.csv")
+    print("Saved results/tables/tabular_run_table.csv and results/tables/tabular_aggregate.csv")
 
 
 if __name__ == "__main__":

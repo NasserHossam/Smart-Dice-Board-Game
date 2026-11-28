@@ -25,7 +25,7 @@ HONEST NOTES FOR THE REPORT
   * Convergence (same rule as tabular): from checkpoint E until the END of training every checkpoint
     has success >= 95% AND mean rolls <= 1.10 * BFS. Not met -> "not converged".
 
-Example:  python sb3_train.py --board N30 --algo all --timesteps 20000 --seeds 0 --time-limit 600
+Example:  python src/sb3_train.py --board N30 --algo all --timesteps 20000 --seeds 0 --time-limit 600
 """
 from __future__ import annotations
 
@@ -51,7 +51,9 @@ from stable_baselines3.common.callbacks import BaseCallback
 from env import BOARDS, SmartDiceEnv, bfs_min_rolls
 
 torch.set_num_threads(1)  # tiny networks: one thread is faster than many
-RESULTS_DIR = Path(__file__).parent / "results"
+from paths import DEEP
+
+RESULTS_DIR = DEEP   # results/deep_rl/
 ALGOS = {"dqn": DQN, "ppo": PPO, "a2c": A2C}
 
 
