@@ -1,21 +1,21 @@
 # Smart Dice Board Game: Reinforcement Learning
 
-A Snakes-and-Ladders style board game solved with reinforcement learning.
-The agent chooses the dice value (1 to 6) each turn, starts on square 1 and must reach square N.
+A Snakes-and-Ladders style board game solved with reinforcement learning. The agent chooses the dice value (1 to 6) each turn, starts on square 1 and must reach square N.
 
-* **Group A (Stable-Baselines3):** DQN, PPO, A2C
-* **Group B (written in NumPy):** tabular Q-Learning and SARSA, both epsilon-greedy
-* Boards: N30 (3 ladders, 3 snakes), N50 (5, 5), N100 (8, 8), fixed layouts documented in `env.py`
-* CPU only, single process, Python 3.10 or newer (tested with 3.12.2, SB3 2.9.2, Gymnasium 1.4.0)
+- **Group A (Stable-Baselines3):** DQN, PPO, A2C
+- **Group B (written in NumPy):** tabular Q-Learning and SARSA, both epsilon-greedy
+- Boards: N30 (3 ladders, 3 snakes), N50 (5, 5), N100 (8, 8), fixed layouts documented in `env.py`
+- **Advanced challenges (new):** random dice, a one-time snake shield, a dynamic board, and a two-player race (see the section below)
+- CPU only, single process, Python 3.10 or newer (tested with 3.12.2, SB3 2.9.2, Gymnasium 1.4.0)
 
 ## Environment rules (`env.py`)
 
-* State: current square (`Discrete(N)`, observation = square - 1). Action: `Discrete(6)`, action a = roll a + 1.
-* A ladder moves the agent forward and a snake moves it back, immediately, never chained.
-* **Invalid move (roll past square N): the agent stays, gets -10, and the roll still counts.**
-* Rewards: goal +100, ladder +20, normal square -1, snake -20, invalid -10.
-* An episode is cut after 5 * N rolls and counts as a failure.
-* `bfs_min_rolls()` gives the true minimum number of rolls: 4 (N30), 5 (N50), 10 (N100).
+- State: current square (`Discrete(N)`, observation = square - 1). Action: `Discrete(6)`, action a = roll a + 1.
+- A ladder moves the agent forward and a snake moves it back, immediately, never chained.
+- **Invalid move (roll past square N): the agent stays, gets -10, and the roll still counts.**
+- Rewards: goal +100, ladder +20, normal square -1, snake -20, invalid -10.
+- An episode is cut after 5 * N rolls and counts as a failure.
+- `bfs_min_rolls()` gives the true minimum number of rolls: 4 (N30), 5 (N50), 10 (N100).
 
 ## Setup (Windows, Command Prompt)
 
@@ -28,25 +28,29 @@ python check_install.py
 python env.py
 ```
 
-`check_install.py` trains DQN, PPO and A2C for 600 steps each to confirm they accept the Discrete observation space.
-`env.py` runs the self-test and prints the random-policy baseline.
+`check_install.py` trains DQN, PPO and A2C for 600 steps each to confirm they accept the Discrete observation space. `env.py` runs the self-test and prints the random-policy baseline.
 
 ## Files
 
-| File | Purpose |
-|---|---|
-| `env.py` | Gymnasium environment, three board layouts, BFS optimum, self-test |
-| `tabular.py` | Q-Learning and SARSA with epsilon decay and per-episode logging |
-| `sb3_train.py` | DQN, PPO, A2C training with greedy-policy checkpoints |
-| `pilot_timing.py` | Short timing run used to choose budgets |
-| `analyze_tabular.py` | Convergence metrics for all saved tabular runs |
-| `evaluate.py` | Final tables and random baseline |
-| `unified_convergence.py` | One convergence rule for all five algorithms, in episodes and environment steps |
-| `experiments.py` | Reward-function and snake/ladder-layout experiments (tabular) |
-| `plots.py` | All required figures |
-| `demo.py` | Play one game with a random, saved, or BFS policy |
-| `demo_learning.py` | Watch Q-Learning and SARSA learn over episodes |
-| `results/` | All CSV, JSON, NPY and PNG outputs |
+| File                          | Purpose                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `env.py`                      | Gymnasium environment, three board layouts, BFS optimum, self-test              |
+| `tabular.py`                  | Q-Learning and SARSA with epsilon decay and per-episode logging                 |
+| `sb3_train.py`                | DQN, PPO, A2C training with greedy-policy checkpoints                           |
+| `pilot_timing.py`             | Short timing run used to choose budgets                                         |
+| `analyze_tabular.py`          | Convergence metrics for all saved tabular runs                                  |
+| `evaluate.py`                 | Final tables and random baseline                                                |
+| `unified_convergence.py`      | One convergence rule for all five algorithms, in episodes and environment steps |
+| `experiments.py`              | Reward-function and snake/ladder-layout experiments (tabular)                   |
+| `plots.py`                    | All required figures                                                            |
+| `demo.py`                     | Play one game with a random, saved, or BFS policy                               |
+| `demo_learning.py`            | Watch Q-Learning and SARSA learn over episodes                                  |
+| `challenge1_random_dice.py`   | Challenge 1: random dice, exact analysis and TD value learning                  |
+| `challenge2_shield.py`        | Challenge 2: one-time snake shield on random dice                               |
+| `challenge3_dynamic_board.py` | Challenge 3: layouts change between episodes, generalization and adaptation     |
+| `challenge4_two_players.py`   | Challenge 4: agent vs a rule-based opponent                                     |
+| `results/`                    | All CSV, JSON, NPY and PNG outputs of the main project                          |
+| `results_challenges/`         | All CSV and PNG outputs of the four challenges (`ch1_*` to `ch4_*`)             |
 
 ## How the results were produced
 
@@ -73,8 +77,7 @@ python experiments.py --which reward --board N50 --seeds 0 1 2 3 4 5 6 7 8 9 --e
 python experiments.py --which layout --seeds 0 1 2 3 4 --episodes 1000 --time-limit 120
 ```
 
-Both training scripts accept `--time-limit SECONDS` per run; a run that hits it stops and saves what it has.
-No run in the reported results hit the limit.
+Both training scripts accept `--time-limit SECONDS` per run; a run that hits it stops and saves what it has. No run in the reported results hit the limit.
 
 ## Demos
 
@@ -89,13 +92,66 @@ python demo.py --board N30 --source file --file results\sb3_ppo_N30_seed0_policy
 
 ## Convergence criterion
 
-A checkpoint is good if greedy success is at least 95% and mean greedy rolls are at most 1.10 times the BFS minimum.
-A run converged at episode E if E and every later checkpoint until the end of training are good.
-Otherwise it is reported as not converged. The tables use this rule for all five algorithms.
+A checkpoint is good if greedy success is at least 95% and mean greedy rolls are at most 1.10 times the BFS minimum. A run converged at episode E if E and every later checkpoint until the end of training are good. Otherwise it is reported as not converged. The tables use this rule for all five algorithms.
+
+## Advanced challenges
+
+Each challenge is a separate script with its own self-test, and all outputs go to `results_challenges/`. The main project files and their results are not touched. Every script prints its self-test first and stops if it fails. Q-Learning is used in Challenges 3 and 4. Challenges 1 and 2 use Q-Learning and SARSA.
+
+```
+python challenge1_random_dice.py --episodes 20000 --seeds 0 1 2 3 4 --mc-games 20000 --time-limit 120
+python challenge2_shield.py --episodes 200000 --seeds 0 1 2 3 4 --mc-games 10000 --time-limit 300
+python challenge3_dynamic_board.py --episodes 30000 --seeds 0 1 2 3 4
+python challenge4_two_players.py --episodes 40000 --seeds 0 1 2
+python challenge4_two_players.py --episodes 40000 --seeds 0 1 2 --first opponent
+```
+
+### Challenge 1: random dice
+
+The environment rolls the dice, so the agent has no decisions. The game is a Markov reward process, and Q-Learning and SARSA reduce to the same value-learning rule. Win probability and expected game length are properties of the board. The script solves the Markov chain exactly, simulates it, and checks that TD learning recovers the exact values.
+
+- Exact expected game length: 14.83 rolls (N30), 22.06 (N50), 37.59 (N100).
+- Simulation agrees with the exact values within sampling error. A few of the gaps are about 2 standard errors, which is plausible with this many comparisons.
+- The learned values stay a few reward points away from the exact ones with a constant learning rate. The cause was not tested in the committed runs.
+
+### Challenge 2: one-time snake shield
+
+The shield only has value when the dice are random, so this challenge uses random dice. The state is (square, shield left, rolled value). The action is "use the shield or not". The shield cancels a snake: the agent stays on the snake head, gets the normal-square reward instead of -20, and the shield is spent. The optimal policy is found exactly by policy iteration (discounted return, gamma 0.99), and Q-Learning and SARSA are scored exactly against it.
+
+| Board | Expected return without shield | With the optimal shield policy | Expected rolls |
+| ----- | ------------------------------ | ------------------------------ | -------------- |
+| N30   | 52.86                          | 65.57                          | 14.83 to 12.36 |
+| N50   | 46.46                          | 62.92                          | 22.06 to 18.35 |
+| N100  | 35.42                          | 57.80                          | 37.59 to 32.58 |
+
+- On N30 and N50, "use the shield on the first snake you would hit" is already optimal. On N100 the optimal policy skips the shield at the snake 34 to 19 and uses it in 42 of the 48 decision states (see `ch2_optimal_policy_N100.csv`).
+- Learned policies: final regret (optimal minus learned discounted value) is 0.000 for the median run on N30 for both algorithms. On N100 it is 0.253 (Q-Learning) and 0.391 (SARSA). Over the last 20% of training, only about 8% to 10% of N100 checkpoints were within the 0.1 tolerance, so most N100 runs are reported as not converged.
+- The "converged at episode" column mostly reflects the epsilon schedule and should not be read as learning speed.
+
+### Challenge 3: dynamic board
+
+Each episode starts on a layout drawn from a pool (N=50, 5 ladders, 5 snakes, jump length 8 to 16). The agent still chooses the dice. Two state designs are compared: position-only (the square) and a local view (what each of the next 6 rolls would do). Agents are trained on a pool of M layouts and tested on 200 held-out layouts. "Excess rolls" means rolls used minus the BFS minimum, counted over games that reached the goal.
+
+- Baselines on the held-out layouts: a hand-written rule that uses only the local view has 0.175 excess rolls (100% success). Uniformly random rolls have 14.99.
+- Position-only agents reach the goal on about half of the held-out layouts for M of 5 or more (median 46.5% to 52.5%) and 84.5% for M=1.
+- The local-view agent reaches the goal on 99% or more, with median excess 2.17 rolls at M=200. It is clearly worse than the hand-written rule.
+- Adaptation (100 cases): a position-only agent moved to a new board plays with median excess 7.60 and 89% success. After retraining it recovered in 86% of cases, in a median of 90 episodes (median over the recovered cases). The local-view agent trained on 200 layouts, with no retraining, had 100% success and median excess 2.00.
+
+### Challenge 4: agent vs a rule-based opponent
+
+Players alternate turns and the first to reach square N wins. The agent chooses its dice. Opponents: random rolls, a hand-written rule with 30% random moves, and a shortest-path (BFS) opponent. A second variant, **bump**, is my own addition and is not part of the original rules: landing on the other player's square sends that player back to square 1. Win probabilities are computed exactly, and the optimal agent is found by value and policy iteration.
+
+- Without bump, the players do not interact. The BFS agent is exactly optimal for every opponent (the self-test checks this), so the opponent's position is not useful information.
+- Moving first matters. When the agent moves first it wins about 100% of games against every opponent. When the opponent moves first, the optimal win probability on N30 is 0.989 (random opponent), 0.508 (rule) and 0.000 (BFS).
+- With bump, the optimal agent wins 1.000 in every case. The BFS agent still loses every game to the BFS opponent.
+- Q-Learning (3 seeds, opponent first, with bump) reached 1.000 against the BFS opponent on both boards. Against the rule opponent on N50 the median was 0.960 against an optimal value of 1.000.
+- In two no-bump runs (N30 and N50 against the rule opponent) one seed finished clearly below optimal (0.427 and 0.622). The cause was not tested.
 
 ## Honest notes
 
-* The environment and the greedy policy are deterministic, so one greedy game is the whole evaluation. Success is 0% or 100% per run.
-* A random policy already reaches the goal every time on these boards, so rolls and return are the informative metrics.
-* Tabular results use 20 seeds, deep RL uses 3. Hyperparameters were not tuned.
-* The report lists all limitations.
+- The environment and the greedy policy are deterministic, so one greedy game is the whole evaluation. Success is 0% or 100% per run.
+- A random policy already reaches the goal every time on these boards, so rolls and return are the informative metrics.
+- Tabular results use 20 seeds, deep RL uses 3. Hyperparameters were not tuned.
+- Challenge results use 3 to 5 seeds, so ranges overlap and no ranking between algorithms is claimed.
+- The regret tolerance in Challenge 2 (0.1), the layout family in Challenge 3, the local-view design, the hand-written rule, and the bump rule in Challenge 4 are choices made for this project.
+- The report lists all limitations.
