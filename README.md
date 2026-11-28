@@ -5,7 +5,7 @@ A Snakes-and-Ladders style board game solved with reinforcement learning. The ag
 - **Group A (Stable-Baselines3):** DQN, PPO, A2C
 - **Group B (written in NumPy):** tabular Q-Learning and SARSA, both epsilon-greedy
 - Boards: N30 (3 ladders, 3 snakes), N50 (5, 5), N100 (8, 8), fixed layouts documented in `env.py`
-- **Advanced challenges (new):** random dice, a one-time snake shield, a dynamic board, and a two-player race (see the section below)
+- **Advanced challenges:** all six: random dice, a one-time snake shield, a dynamic board, a two-player race, DQN vs tabular Q-Learning on larger boards, and reward shaping (see the section below)
 - CPU only, single process, Python 3.10 or newer (tested with 3.12.2, SB3 2.9.2, Gymnasium 1.4.0)
 
 ## Environment rules (`env.py`)
@@ -49,8 +49,10 @@ python env.py
 | `challenge2_shield.py`        | Challenge 2: one-time snake shield on random dice                               |
 | `challenge3_dynamic_board.py` | Challenge 3: layouts change between episodes, generalization and adaptation     |
 | `challenge4_two_players.py`   | Challenge 4: agent vs a rule-based opponent                                     |
+| `challenge5_dqn_vs_tabular.py`| Challenge 5: DQN vs tabular Q-Learning on larger boards (N200, N400)            |
+| `challenge6_reward_shaping.py`| Challenge 6: reward shaping (sparse, potential-based, progress bonus)           |
 | `results/`                    | All CSV, JSON, NPY and PNG outputs of the main project                          |
-| `results_challenges/`         | All CSV and PNG outputs of the four challenges (`ch1_*` to `ch4_*`)             |
+| `results_challenges/`         | All CSV and PNG outputs of the six challenges (`ch1_*` to `ch6_*`)             |
 
 ## How the results were produced
 
@@ -96,7 +98,7 @@ A checkpoint is good if greedy success is at least 95% and mean greedy rolls are
 
 ## Advanced challenges
 
-Each challenge is a separate script with its own self-test, and all outputs go to `results_challenges/`. The main project files and their results are not touched. Every script prints its self-test first and stops if it fails. Q-Learning is used in Challenges 3 and 4. Challenges 1 and 2 use Q-Learning and SARSA.
+Each challenge is a separate script with its own self-test, and all outputs go to `results_challenges/`. The main project files and their results are not touched. Every script prints its self-test first and stops if it fails. Q-Learning is used in Challenges 3 and 4. Challenges 1, 2 and 6 use Q-Learning and SARSA. Challenge 5 compares Q-Learning with DQN.
 
 ```
 python challenge1_random_dice.py --episodes 20000 --seeds 0 1 2 3 4 --mc-games 20000 --time-limit 120
@@ -104,6 +106,8 @@ python challenge2_shield.py --episodes 200000 --seeds 0 1 2 3 4 --mc-games 10000
 python challenge3_dynamic_board.py --episodes 30000 --seeds 0 1 2 3 4
 python challenge4_two_players.py --episodes 40000 --seeds 0 1 2
 python challenge4_two_players.py --episodes 40000 --seeds 0 1 2 --first opponent
+python challenge5_dqn_vs_tabular.py --workers 6
+python challenge6_reward_shaping.py --workers 2
 ```
 
 ### Challenge 1: random dice
@@ -147,11 +151,28 @@ Players alternate turns and the first to reach square N wins. The agent chooses 
 - Q-Learning (3 seeds, opponent first, with bump) reached 1.000 against the BFS opponent on both boards. Against the rule opponent on N50 the median was 0.960 against an optimal value of 1.000.
 - In two no-bump runs (N30 and N50 against the rule opponent) one seed finished clearly below optimal (0.427 and 0.622). The cause was not tested.
 
+### Challenge 5: DQN vs tabular Q-Learning on larger boards
+
+Two generated boards with the same jump density as N100: N200 (16 ladders, 16 snakes) and N400 (32, 32), layouts in `results_challenges/ch5_boards.json`. Q-Learning uses the main settings (2,000 episodes, 10 seeds); DQN uses the main untuned hyperparameters with 1,000 x N steps (3 seeds).
+
+- On N200 the policy with the best discounted return uses 18 rolls (BFS 17): a one-roll detour collects an extra ladder. DQN found it in all 3 seeds after a median of 197,500 steps. Q-Learning with 2,000 episodes ended on 19 to 21 rolls and none of the 10 runs converged.
+- With 10,000 episodes (`--budget-check 10000`) Q-Learning found the 18-roll policy in 10 of 10 seeds, after a median of 345 episodes (about 26,000 steps). The 2,000-episode schedule stopped exploring too early.
+- On N400 both converged in every seed (Q-Learning median 24,231 steps, DQN 122,500).
+- DQN needed 5 to 31 times more environment steps than Q-Learning, and its runs took about 70 to 90 times longer.
+
+### Challenge 6: reward shaping
+
+Part 1 is the reward-function experiment in `experiments.py`. Part 2 compares five learning rewards (default, sparse, sparse + potential-based shaping, default + potential-based shaping, and a forward-progress bonus) with Q-Learning and SARSA on N50, N100 and N200 (10 seeds, 2,000 episodes). Every result is measured under the original rewards.
+
+- Potential-based shaping (Phi = progress along the board) made learning faster without changing the final policy, for example SARSA on N100 from a median of 40.5 to 10.5 episodes.
+- The sparse reward was 2 to 3 times slower and, because nothing pays for ladders, picked equally short paths with a lower original-reward return.
+- The progress bonus is not potential-based. Value iteration shows its optimal policy never finishes, and Q-Learning exploited the ladder-snake loop in all 30 runs (0 games finished). The loop appeared only after a few hundred to more than a thousand episodes.
+
 ## Honest notes
 
 - The environment and the greedy policy are deterministic, so one greedy game is the whole evaluation. Success is 0% or 100% per run.
 - A random policy already reaches the goal every time on these boards, so rolls and return are the informative metrics.
 - Tabular results use 20 seeds, deep RL uses 3. Hyperparameters were not tuned.
-- Challenge results use 3 to 5 seeds, so ranges overlap and no ranking between algorithms is claimed.
+- Challenge results use 3 to 10 seeds, so ranges overlap and no ranking between algorithms is claimed.
 - The regret tolerance in Challenge 2 (0.1), the layout family in Challenge 3, the local-view design, the hand-written rule, and the bump rule in Challenge 4 are choices made for this project.
 - The report lists all limitations.
